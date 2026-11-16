@@ -2,12 +2,22 @@
 
 import re
 import unicodedata
+import warnings
 from functools import cache
 from tempfile import TemporaryDirectory
 
-from jieba import Tokenizer
-
 from .lexical import LexicalTerms
+
+# Jieba 0.42.1 的两个模块含未转义的正则字面量，Python 3.12 首次编译时会告警。
+# 只豁免这两个模块中的已知告警，保留调用方的其他告警策略。
+with warnings.catch_warnings():
+    warnings.filterwarnings(
+        "ignore",
+        message=r"^invalid escape sequence '\\[.s]'$",
+        category=SyntaxWarning,
+        module=r"^(?:.*[/\\])?jieba[/\\](?:finalseg[/\\])?__init__(?:\.py)?$",
+    )
+    from jieba import Tokenizer
 
 # 仅识别有字母和数字的常见型号形态，避免把条款号、日期和普通数字当作设备编号。
 _CODE = re.compile(

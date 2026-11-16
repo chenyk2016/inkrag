@@ -2,6 +2,8 @@
 
 import json
 import os
+import subprocess
+import sys
 from collections.abc import Generator
 from pathlib import Path
 from typing import override
@@ -31,6 +33,36 @@ from inkrag.search_diagnostics import native_explanation
 from inkrag.search_models import SearchFilter
 from inkrag.search_queries import compile_filters, validate_attributes
 from inkrag.sqlite_keyword import sqlite_analyzer
+
+
+def test_fresh_sdk_import_keeps_strict_warnings(tmp_path: Path) -> None:
+    """无字节码缓存时加载固定分词依赖，调用方的其他告警仍按错误处理。"""
+    subprocess.run(
+        [
+            sys.executable,
+            "-B",
+            "-W",
+            "error",
+            "-X",
+            f"pycache_prefix={tmp_path / 'pycache'}",
+            "-c",
+            """
+import warnings
+
+from inkrag.lexical_jieba import JiebaAnalyzer
+
+assert "传感器" in JiebaAnalyzer().analyze("传感器").terms
+try:
+    warnings.warn("unrelated syntax warning", SyntaxWarning)
+except SyntaxWarning:
+    pass
+else:
+    raise AssertionError("SDK import relaxed the caller's warning policy")
+""",
+        ],
+        check=True,
+        timeout=30,
+    )
 
 
 def test_keyword_query_uses_shared_tokens_exact_ids_and_original_vector_text() -> None:
