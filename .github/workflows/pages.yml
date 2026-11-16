@@ -1,0 +1,44 @@
+name: 发布交互学习教程
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: 构建教程
+        env:
+          PAGES_REPOSITORY: ${{ github.repository }}
+          PAGES_SHA: ${{ github.sha }}
+        run: python3 scripts/build-learning-page.py --output "$RUNNER_TEMP/inkrag-pages"
+      - uses: actions/upload-pages-artifact@v5.0.0
+        with:
+          path: ${{ runner.temp }}/inkrag-pages
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: 部署教程
+        id: deployment
+        uses: actions/deploy-pages@v5.0.1

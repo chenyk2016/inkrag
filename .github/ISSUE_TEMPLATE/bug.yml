@@ -1,0 +1,48 @@
+name: 报告缺陷
+description: 提交可以复现的功能、安装或文档问题
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        此问题会公开。请使用合成资料，移除真实原件、账号、令牌和连接串。
+        如果可能涉及数据泄漏、越权或其他安全问题，请使用[私密漏洞报告](https://github.com/chenyk2016/inkrag/security/advisories/new)。
+  - type: dropdown
+    id: entrypoint
+    attributes:
+      label: 使用入口
+      options:
+        - 浏览器工作台
+        - Python SDK
+        - HTTP API
+        - 安装或部署
+        - 文档或教程
+        - 其他
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: 版本或提交
+      description: 填写 GitHub Release 标签、Git 提交号，或受影响 Python 包及版本。
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: 最小复现
+      description: 说明前置条件、命令或点击步骤。用可公开的小样本复现。
+    validations:
+      required: true
+  - type: textarea
+    id: behavior
+    attributes:
+      label: 预期与实际行为
+      description: 分别描述预计看到的结果和实际观察到的结果。
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: 环境与脱敏日志
+      description: 按相关性填写操作系统、CPU 架构、Python、Docker、浏览器或解析引擎版本。可附已脱敏的任务或请求编号。

@@ -1,0 +1,39 @@
+{
+  "name": "inkrag-workbench",
+  "version": "0.1.0",
+  "private": true,
+  "license": "Apache-2.0",
+  "type": "module",
+  "scripts": {
+    "check": "tsc --noEmit",
+    "test": "node --test tests/*.test.mjs",
+    "build": "node build.mjs",
+    "format:check": "prettier --check src tests build.mjs vite.config.ts index.html",
+    "dev": "vite",
+    "postinstall": "patch-package --error-on-fail"
+  },
+  "dependencies": {
+    "@radix-ui/react-scroll-area": "1.4.0",
+    "@tanstack/react-query": "5.107.1",
+    "antd": "6.7.0",
+    "dompurify": "3.4.17",
+    "htmlparser2": "10.1.0",
+    "lucide-react": "1.70.0",
+    "oidc-client-ts": "3.5.0",
+    "pdfjs-dist": "6.5.438",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-resizable-panels": "4.21.0",
+    "react-router-dom": "7.18.5"
+  },
+  "devDependencies": {
+    "@types/node": "24.19.2",
+    "@types/react": "19.3.0",
+    "@types/react-dom": "19.3.0",
+    "@vitejs/plugin-react": "6.3.0",
+    "patch-package": "8.0.1",
+    "prettier": "^3.6.2",
+    "typescript": "5.9.3",
+    "vite": "8.3.7"
+  }
+}

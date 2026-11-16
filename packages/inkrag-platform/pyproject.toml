@@ -1,0 +1,30 @@
+[project]
+name = "inkrag-platform"
+version = "0.1.0a1"
+description = "独立装配的生产文档与检索平台"
+requires-python = ">=3.12,<3.13"
+readme = "README.md"
+license = "Apache-2.0 AND MIT AND BSD-2-Clause AND ISC"
+license-files = ["LICENSE", "NOTICE", "src/inkrag_platform/resources/bge-small-zh-v1.5/LICENSE"]
+dependencies = ["pydantic>=2.10,<3", "sqlalchemy>=2.0.40,<2.1", "psycopg[binary]>=3.2,<4", "alembic>=1.16,<2", "inkparse[docling]==0.4.0a1", "inkstore[s3]==0.1.0a1", "fastapi>=0.115,<1", "uvicorn>=0.34,<1", "httpx>=0.28,<1", "PyJWT[crypto]>=2.10,<3", "celery>=5.5,<6", "kombu>=5.5,<6", "filelock>=4.2.9,<5", "pyseccomp>=0.1,<1; sys_platform == 'linux'", "py-landlock==0.1.1; sys_platform == 'linux'"]
+
+[project.urls]
+Source = "https://github.com/chenyk2016/inkrag/tree/main/packages/inkrag-platform"
+Documentation = "https://github.com/chenyk2016/inkrag/blob/main/docs/platform-implementation.md"
+Issues = "https://github.com/chenyk2016/inkrag/issues"
+
+[project.optional-dependencies]
+rag = ["inkrag==1.1.0a1", "opensearch-py>=3,<4", "tokenizers>=0.22,<0.24"]
+
+[project.scripts]
+inkrag = "inkrag_platform.cli:main"
+
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build]
+artifacts = ["src/inkrag_platform/static/**"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/inkrag_platform"]

@@ -1,0 +1,184 @@
+# Local integration stack: real production adapters, single-node dependencies for development.
+x-app: &app
+  image: ${INKRAG_APP_IMAGE:-inkrag-platform:0.1.0a1}
+  init: true
+  restart: unless-stopped
+  read_only: true
+  tmpfs: ["/tmp:rw,size=768m,mode=1777"]
+  cap_drop: [ALL]
+  security_opt: [no-new-privileges:true]
+  pids_limit: 256
+  volumes:
+    - ${INKRAG_DOCLING_MODELS_DIR:-./.inkrag/docling-models}:/opt/inkrag/docling-models:ro
+  environment: &app-env
+    INKRAG_MODE: ${INKRAG_MODE:-development}
+    INKRAG_CAPABILITIES: ${INKRAG_CAPABILITIES:-combined}
+    INKRAG_DATABASE_URL: ${INKRAG_DATABASE_URL:-postgresql+psycopg://inkrag_app:${PG_APP_PASSWORD}@postgres:5432/inkrag}
+    INKRAG_RABBIT_URL: ${INKRAG_RABBIT_URL:-amqp://inkrag:${RABBIT_PASSWORD}@rabbitmq:5672/inkrag}
+    INKRAG_S3_ENDPOINT: ${INKRAG_S3_ENDPOINT:-http://minio:9000}
+    INKRAG_S3_BUCKET: ${INKRAG_S3_BUCKET:-inkrag}
+    INKRAG_S3_PREFIX: ${INKRAG_S3_PREFIX:-platform/v1}
+    AWS_ACCESS_KEY_ID: ${AWS_ACCESS_KEY_ID-${MINIO_ACCESS_KEY}}
+    AWS_SECRET_ACCESS_KEY: ${AWS_SECRET_ACCESS_KEY-${MINIO_SECRET_KEY}}
+    AWS_SESSION_TOKEN: ${AWS_SESSION_TOKEN:-}
+    AWS_DEFAULT_REGION: ${AWS_DEFAULT_REGION:-us-east-1}
+    INKRAG_OPENSEARCH_URL: ${INKRAG_OPENSEARCH_URL:-http://opensearch:9200}
+    INKRAG_OPENSEARCH_USER: ${INKRAG_OPENSEARCH_USER:-}
+    INKRAG_OPENSEARCH_PASSWORD: ${INKRAG_OPENSEARCH_PASSWORD:-}
+    INKRAG_EMBEDDING_URL: ${INKRAG_EMBEDDING_URL:-http://embedding-online:80}
+    INKRAG_BATCH_EMBEDDING_URL: ${INKRAG_BATCH_EMBEDDING_URL:-http://embedding-batch:80}
+    INKRAG_MODEL_REVISION: ${INKRAG_MODEL_REVISION:-${MODEL_REVISION}}
+    INKRAG_OIDC_ISSUER: ${INKRAG_OIDC_ISSUER:-http://127.0.0.1:${OIDC_PORT}/realms/inkrag}
+    INKRAG_OIDC_JWKS_URL: ${INKRAG_OIDC_JWKS_URL-http://keycloak:8080/realms/inkrag/protocol/openid-connect/certs}
+    INKRAG_OIDC_AUDIENCE: ${INKRAG_OIDC_AUDIENCE:-inkrag-web}
+    INKRAG_OIDC_CLIENT_ID: ${INKRAG_OIDC_CLIENT_ID:-inkrag-web}
+    INKRAG_SEARCH_REPLICAS: ${INKRAG_SEARCH_REPLICAS:-0}
+    INKRAG_LEXICAL_PROFILE: ${INKRAG_LEXICAL_PROFILE:-legacy}
+    INKRAG_SANDBOX_REQUIRED: "true"
+    INKRAG_DOCLING_MEMORY_MB: ${INKRAG_DOCLING_MEMORY_MB:-4096}
+    INKRAG_DOCLING_SECONDS: ${INKRAG_DOCLING_SECONDS:-180}
+    INKRAG_PARSE_MODELS_PATH: /opt/inkrag/docling-models
+    INKRAG_PARSE_MEMORY_MB: ${INKRAG_PARSE_MEMORY_MB:-512}
+    INKRAG_PARSE_SECONDS: ${INKRAG_PARSE_SECONDS:-60}
+    INKRAG_WORKER_CONCURRENCY: ${INKRAG_WORKER_CONCURRENCY:-1}
+    INKRAG_JOB_SECONDS: ${INKRAG_JOB_SECONDS:-3600}
+    INKRAG_MAX_BUILD_DOCUMENTS: ${INKRAG_MAX_BUILD_DOCUMENTS:-5000}
+    INKRAG_MAX_MANIFEST_BYTES: ${INKRAG_MAX_MANIFEST_BYTES:-16777216}
+    INKRAG_MAX_BUILD_INPUT_BYTES: ${INKRAG_MAX_BUILD_INPUT_BYTES:-268435456}
+    INKRAG_BIND: 0.0.0.0
+    INKRAG_PORT: "8010"
+
+services:
+  postgres:
+    image: ${POSTGRES_IMAGE:-postgres:18-alpine}
+    environment:
+      POSTGRES_USER: bootstrap
+      POSTGRES_PASSWORD: ${PG_BOOTSTRAP_PASSWORD:?Run inkrag up to initialize private configuration}
+      PG_APP_PASSWORD: ${PG_APP_PASSWORD}
+      PG_MIGRATION_PASSWORD: ${PG_MIGRATION_PASSWORD}
+      KEYCLOAK_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+    ports: ["127.0.0.1:${PG_PORT}:5432"]
+    volumes:
+      - pgdata:/var/lib/postgresql
+      - ${INKRAG_RESOURCE_DIR}/init-postgres.sh:/docker-entrypoint-initdb.d/10-inkrag.sh:ro
+    healthcheck: {test: [CMD-SHELL, "pg_isready -U bootstrap -d postgres"], interval: 5s, timeout: 3s, retries: 30}
+    mem_limit: 512m
+  rabbitmq:
+    image: ${RABBIT_IMAGE:-rabbitmq:4.4.0-management}
+    environment:
+      RABBITMQ_DEFAULT_USER: inkrag
+      RABBITMQ_DEFAULT_PASS: ${RABBIT_PASSWORD}
+      RABBITMQ_DEFAULT_VHOST: inkrag
+    ports: ["127.0.0.1:${RABBIT_PORT}:5672"]
+    volumes: [rabbitdata:/var/lib/rabbitmq]
+    healthcheck: {test: [CMD, rabbitmq-diagnostics, -q, ping], interval: 5s, timeout: 5s, retries: 30}
+    mem_limit: 512m
+  minio:
+    image: ${MINIO_IMAGE:-minio/minio:RELEASE.2025-09-07T16-13-09Z}
+    command: [server, /data]
+    environment: {MINIO_ROOT_USER: "${MINIO_ACCESS_KEY}", MINIO_ROOT_PASSWORD: "${MINIO_SECRET_KEY}"}
+    ports: ["127.0.0.1:${S3_PORT}:9000"]
+    volumes: [s3data:/data]
+    mem_limit: 384m
+  opensearch:
+    image: ${OPENSEARCH_IMAGE:-opensearchproject/opensearch:3.3.2}
+    environment:
+      discovery.type: single-node
+      DISABLE_SECURITY_PLUGIN: "true"
+      DISABLE_INSTALL_DEMO_CONFIG: "true"
+      OPENSEARCH_JAVA_OPTS: -Xms512m -Xmx512m
+    ports: ["127.0.0.1:${SEARCH_PORT}:9200"]
+    volumes: [searchdata:/usr/share/opensearch/data]
+    healthcheck: {test: [CMD-SHELL, "curl -fs http://localhost:9200/_cluster/health >/dev/null"], interval: 5s, timeout: 5s, retries: 60}
+    ulimits: {nofile: {soft: 65536, hard: 65536}}
+    mem_limit: 1536m
+  keycloak:
+    image: ${KEYCLOAK_IMAGE:-quay.io/keycloak/keycloak:26.7.5}
+    command: [start-dev]
+    environment:
+      KC_DB: postgres
+      KC_DB_URL: jdbc:postgresql://postgres:5432/keycloak
+      KC_DB_USERNAME: keycloak
+      KC_DB_PASSWORD: ${KEYCLOAK_DB_PASSWORD}
+      KC_BOOTSTRAP_ADMIN_USERNAME: bootstrap
+      KC_BOOTSTRAP_ADMIN_PASSWORD: ${OIDC_BOOTSTRAP_PASSWORD}
+      KC_HOSTNAME: http://127.0.0.1:${OIDC_PORT}
+      JAVA_OPTS_KC_HEAP: -Xms64m -Xmx384m
+    ports: ["127.0.0.1:${OIDC_PORT}:8080"]
+    volumes:
+      - ./keycloak-themes/inkrag:/opt/keycloak/themes/inkrag:ro
+    depends_on: {postgres: {condition: service_healthy}}
+    mem_limit: 768m
+  embedding-online: &embedding
+    image: ${TEI_IMAGE}
+    profiles: [app]
+    command: [--model-id, BAAI/bge-small-zh-v1.5, --revision, "${MODEL_REVISION}", --pooling, cls, --max-concurrent-requests, "32", --max-batch-tokens, "8192"]
+    environment: &embedding-env
+      HF_HUB_DISABLE_XET: "1"
+      HTTP_PROXY: ${MODEL_HTTP_PROXY:-}
+      HTTPS_PROXY: ${MODEL_HTTP_PROXY:-}
+      RAYON_NUM_THREADS: "2"
+    volumes: [modeldata:/data]
+    mem_limit: 768m
+    cpus: 2
+  embedding-batch:
+    <<: *embedding
+    cpus: 1
+    environment:
+      <<: *embedding-env
+      RAYON_NUM_THREADS: "1"
+  migrate:
+    <<: *app
+    profiles: [setup]
+    command: [inkrag, migrate]
+    healthcheck:
+      disable: true
+    environment:
+      INKRAG_MODE: ${INKRAG_MODE:-development}
+      INKRAG_MIGRATION_URL: ${INKRAG_MIGRATION_URL:-postgresql+psycopg://inkrag_migrator:${PG_MIGRATION_PASSWORD}@postgres:5432/inkrag}
+    mem_limit: 384m
+  api:
+    <<: *app
+    environment:
+      <<: *app-env
+      INKRAG_LOCAL_MODEL_BASE_URL: ${INKRAG_LOCAL_MODEL_BASE_URL:-}
+      INKRAG_LOCAL_MODEL_ID: ${INKRAG_LOCAL_MODEL_ID:-}
+      INKRAG_LOCAL_MODEL_DISABLE_REASONING: ${INKRAG_LOCAL_MODEL_DISABLE_REASONING:-false}
+      INKRAG_VISION_PROVIDER: ${INKRAG_VISION_PROVIDER:-siliconflow}
+      INKRAG_VISION_MODEL_ID: ${INKRAG_VISION_MODEL_ID:-}
+      INKRAG_SILICONFLOW_API_KEY: ${INKRAG_SILICONFLOW_API_KEY:-}
+    profiles: [app]
+    command: [inkrag, api]
+    ports: ["127.0.0.1:${APP_PORT}:8010"]
+    mem_limit: ${INKRAG_API_MEMORY:-1024m}
+    cpus: ${INKRAG_API_CPUS:-2}
+  worker:
+    <<: *app
+    profiles: [app]
+    command: [inkrag, worker]
+    healthcheck:
+      test: [CMD, python, -m, inkrag_platform.health, worker]
+      interval: 15s
+      timeout: 10s
+      start_period: 60s
+      retries: 3
+    mem_limit: ${INKRAG_WORKER_MEMORY:-3g}
+    cpus: ${INKRAG_WORKER_CPUS:-1}
+  relay:
+    <<: *app
+    profiles: [app]
+    command: [inkrag, relay]
+    healthcheck:
+      test: [CMD, python, -m, inkrag_platform.health, relay]
+      interval: 10s
+      timeout: 5s
+      start_period: 15s
+      retries: 3
+    mem_limit: 384m
+    cpus: 0.5
+volumes:
+  pgdata:
+  rabbitdata:
+  s3data:
+  searchdata:
+  modeldata:

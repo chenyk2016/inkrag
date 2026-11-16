@@ -1,0 +1,17 @@
+.git
+.venv
+.inkrag
+**/node_modules
+**/__pycache__
+**/.env
+**/.env.*
+backend
+frontend
+var
+inkrag-data
+prototypes
+docs/evidence
+web/evidence
+tests
+PROJECT.md
+*.log

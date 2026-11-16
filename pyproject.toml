@@ -1,0 +1,87 @@
+[project]
+name = "inkrag"
+version = "1.1.0a1"
+description = "Evidence-oriented document ingestion and hybrid retrieval"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "llama-index-core==0.14.25",
+  "pydantic>=2.10,<3",
+  "sqlalchemy>=2.0.40,<2.1",
+  "filelock>=4.2.9,<5",
+  "httpx>=0.28,<1",
+  "inkparse==0.4.0a1",
+  "inkstore==0.1.0a1",
+  "opensearch-py>=3,<4",
+  "jieba==0.42.1",
+]
+
+[project.urls]
+Homepage = "https://github.com/chenyk2016/inkrag"
+Documentation = "https://github.com/chenyk2016/inkrag/blob/main/docs/python-sdk.md"
+Tutorial = "https://chenyk2016.github.io/inkrag/"
+Issues = "https://github.com/chenyk2016/inkrag/issues"
+
+[project.optional-dependencies]
+s3 = ["inkstore[s3]==0.1.0a1"]
+local = ["llama-index-embeddings-fastembed==0.7.0", "fastembed==0.9.1"]
+
+[dependency-groups]
+dev = ["ruff>=0.12,<1", "pyright>=1.1.400,<2", "pytest>=8.4,<10", "httpx>=0.28,<1", "httpx2>=2,<3", "boto3-stubs[s3]>=1.37,<2"]
+
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/inkrag"]
+
+[tool.hatch.build.targets.sdist]
+only-include = ["src/inkrag", "pyproject.toml", "README.md", "LICENSE", "NOTICE"]
+
+[tool.ruff]
+target-version = "py312"
+line-length = 100
+src = ["src"]
+
+[tool.ruff.lint]
+select = ["E4", "E7", "E9", "F", "I", "B", "UP", "ASYNC", "ANN", "RUF"]
+allowed-confusables = ["，", "。", "：", "；", "（", "）", "、", "？", "！"]
+
+[tool.pyright]
+include = ["src", "packages/inkparse/src", "packages/inkstore/src", "packages/inkrag-platform/src", "tests", "examples"]
+extraPaths = ["packages/inkparse/src", "packages/inkstore/src", "packages/inkrag-platform/src"]
+exclude = [".venv", "**/__pycache__"]
+pythonVersion = "3.12"
+typeCheckingMode = "strict"
+venvPath = "."
+venv = ".venv"
+stubPath = "typings"
+reportMissingTypeStubs = "error"
+reportUnnecessaryTypeIgnoreComment = "error"
+reportImplicitOverride = "error"
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q --strict-config --strict-markers"
+filterwarnings = ["error"]
+markers = ["integration: 使用真实本地模型，需要显式启用"]
+
+[tool.uv.workspace]
+members = ["packages/inkparse", "packages/inkstore", "packages/inkrag-platform"]
+
+[tool.uv.sources]
+torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+torchvision = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]
+inkparse = { workspace = true }
+inkstore = { workspace = true }
+inkrag = { workspace = true }
+inkrag-platform = { workspace = true }
+
+# 本地解析固定CPU计算，不把CUDA运行库带入普通开发部署。
+[[tool.uv.index]]
+name = "pytorch-cpu"
+url = "https://download.pytorch.org/whl/cpu"
+explicit = true

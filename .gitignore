@@ -1,0 +1,45 @@
+# Workspace registration belongs to the parent workspace repository.
+/PROJECT.md
+
+# Credentials and local configuration.
+.env
+.env.*
+!.env.example
+!.env.template
+*.pem
+*.key
+
+# Dependencies, builds and caches.
+node_modules/
+.venv/
+venv/
+dist/
+coverage/
+__pycache__/
+*.py[cod]
+*.tsbuildinfo
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.cache/
+.preview-build/
+.DS_Store
+
+# Runtime files.
+*.log
+*.pid
+*.sqlite*
+*.db
+*.db-*
+var/
+
+# Default directory shown in the package usage example.
+/knowledge/
+
+# Generated application assets and fresh service state.
+/src/inkrag_server/static/
+/inkrag-data/
+
+# Local bootstrap secrets and generated platform assets.
+/.inkrag/
+/packages/inkrag-platform/src/inkrag_platform/static/

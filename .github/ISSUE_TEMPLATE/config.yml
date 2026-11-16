@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 使用文档
+    url: https://github.com/chenyk2016/inkrag/blob/main/docs/index.md
+    about: 查阅快速开始、Python SDK、HTTP 接口、教程和部署说明
+  - name: 私密漏洞报告
+    url: https://github.com/chenyk2016/inkrag/security/advisories/new
+    about: 通过 GitHub 私下报告数据泄漏、越权等安全问题

@@ -1,0 +1,238 @@
+.embedded-workbench .catalog-scroll {
+  flex: 1;
+  min-height: 0;
+}
+.catalog {
+  padding: 20px 2px 24px;
+  /* 限制 Radix 内容测量的固有宽度，仅表格横滚，工具栏保持在视口内。 */
+  contain: inline-size;
+  min-width: 0;
+}
+.catalog-attention {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 17px 20px;
+  border: 1px solid #dbe4fb;
+  border-radius: 12px;
+  background: #f0f4ff;
+  color: #304779;
+  margin-bottom: 22px;
+}
+.catalog-attention > div {
+  flex: 1;
+}
+.catalog-attention p {
+  margin: 4px 0 0;
+  color: #586b87;
+}
+.catalog-toolbar,
+.catalog-filters {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.catalog-toolbar {
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.catalog-toolbar > .ant-input-affix-wrapper {
+  width: min(100%, 255px);
+}
+.catalog-filters [aria-pressed="true"] {
+  color: #3157b5;
+  background: #eaf0ff;
+  border-color: transparent;
+}
+.catalog-table-wrap,
+.catalog-empty {
+  border: 1px solid #e0e6ef;
+  border-radius: 12px;
+  background: #fff;
+  overflow: hidden;
+}
+.catalog-table {
+  width: 100%;
+  min-width: 840px;
+  border-collapse: collapse;
+  text-align: left;
+}
+.catalog-table thead {
+  background: #f7f9fc;
+  color: #58677c;
+}
+.catalog-table th,
+.catalog-table td {
+  padding: 14px 16px;
+  border-bottom: 1px solid #e9edf3;
+}
+.catalog-table th[scope="row"] {
+  width: 30%;
+  font-weight: 500;
+}
+.catalog-table tbody tr:last-child > * {
+  border-bottom: 0;
+}
+.catalog-file {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.catalog-file strong {
+  overflow-wrap: anywhere;
+}
+.catalog-file small {
+  display: none;
+}
+.catalog-filetype {
+  display: grid;
+  place-items: center;
+  width: 42px;
+  height: 44px;
+  flex: 0 0 42px;
+  border-radius: 7px;
+  background: #eef2f9;
+  color: #536b92;
+  font-size: 10px;
+}
+.catalog-status {
+  display: inline-block;
+  white-space: nowrap;
+  padding: 3px 7px;
+  border-radius: 6px;
+  font-size: 12px;
+  background: #eef2f8;
+  color: #42536e;
+}
+.catalog-review {
+  background: #fcf1dc;
+  color: #794b10;
+}
+.catalog-ready {
+  background: #eaf0ff;
+  color: #365398;
+}
+.catalog-live {
+  background: #e5f4eb;
+  color: #236048;
+}
+.catalog-failed {
+  background: #fdeaea;
+  color: #953835;
+}
+.catalog-more,
+.catalog-empty {
+  text-align: center;
+  padding: 20px;
+}
+.catalog-empty h2 {
+  margin: 0 0 12px;
+}
+@media (max-width: 850px) {
+  .catalog-time {
+    display: none;
+  }
+}
+@media (max-width: 650px) {
+  .catalog-online,
+  .catalog-filetype {
+    display: none;
+  }
+  .catalog-file small {
+    display: block;
+    color: #52637a;
+    margin-top: 4px;
+  }
+  .catalog-table th,
+  .catalog-table td {
+    padding: 11px 7px;
+  }
+  .catalog-table th[scope="row"] {
+    width: 50%;
+  }
+  .catalog-table td:last-child .ant-btn {
+    padding-inline: 3px;
+  }
+  .catalog-attention {
+    flex-wrap: wrap;
+    padding: 14px;
+  }
+  .catalog-filters .ant-btn {
+    padding-inline: 7px;
+  }
+}
+.embedded-workbench .catalog-review-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+.catalog-back.ant-btn {
+  padding-inline: 0;
+  margin-inline-end: auto;
+}
+
+/* 多维核对列：属性、解析方式、版本与「…」操作。 */
+.catalog-attributes {
+  max-width: 220px;
+}
+.catalog-attr-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 6px;
+}
+.catalog-attr {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: #f0f3f7;
+  font-size: 11px;
+  color: #3c4857;
+}
+.catalog-attr em {
+  font-style: normal;
+  color: #7a8596;
+}
+.catalog-muted {
+  color: #b6bdc7;
+}
+.catalog-engine {
+  font-size: 12px;
+  color: #145cc5;
+  background: #eef4ff;
+  padding: 2px 8px;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.catalog-version {
+  font-weight: 600;
+  color: #273244;
+}
+.catalog-online-note {
+  display: block;
+  margin-top: 3px;
+  color: #b06a1f;
+  font-size: 11px;
+}
+.catalog-actions {
+  white-space: nowrap;
+}
+.catalog-actions > .ant-btn {
+  margin-right: 2px;
+}
+
+/* 列表在窄屏局部横向滚动，不挤断状态和开关文字。 */
+.catalog-table-wrap {
+  overflow-x: auto;
+}
+.catalog-table thead th {
+  white-space: nowrap;
+}
+.document-enablement {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  white-space: nowrap;
+  font-size: 12px;
+}

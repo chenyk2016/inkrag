@@ -1,0 +1,36 @@
+# Production application topology; dependency HA/TLS is supplied by deployment configuration.
+FROM node:24.19.0-bookworm-slim@sha256:a9f5f7c91a432850b2a8a7797adf5eadb6c733ceed61167806cee7ea7fbc29df AS web
+WORKDIR /web
+COPY web/package*.json ./
+COPY web/patches/ ./patches/
+RUN npm ci --registry=https://registry.npmjs.org --proxy="${HTTP_PROXY:-}" --https-proxy="${HTTPS_PROXY:-}" --fetch-retries=1 --fetch-timeout=30000
+COPY web/ ./
+RUN npm run check && npm run build
+
+FROM python:3.12.16-slim@sha256:5e2bdb1b0d542d5039cffb8181c65930093949194a65c365dfb1b0fe13a4fa5b
+WORKDIR /app
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+RUN apt-get update && apt-get upgrade -y \
+    && apt-get install -y --no-install-recommends libseccomp2 libgomp1 \
+    && rm -rf /var/lib/apt/lists/* \
+    && pip install --no-cache-dir uv==0.9.10
+COPY pyproject.toml uv.lock README.md LICENSE NOTICE ./
+# Install locked third-party dependencies before source/static changes invalidate this layer.
+COPY packages/inkparse/pyproject.toml packages/inkparse/README.md ./packages/inkparse/
+COPY packages/inkstore/pyproject.toml packages/inkstore/README.md ./packages/inkstore/
+COPY packages/inkrag-platform/pyproject.toml packages/inkrag-platform/README.md ./packages/inkrag-platform/
+RUN --mount=type=cache,target=/root/.cache/uv UV_HTTP_TIMEOUT=180 UV_LINK_MODE=copy \
+    uv sync --locked --package inkrag-platform --extra rag --no-dev --no-install-workspace
+COPY packages/ ./packages/
+COPY src/ ./src/
+COPY --from=web /web/dist/ ./packages/inkrag-platform/src/inkrag_platform/static/
+RUN --mount=type=cache,target=/root/.cache/uv UV_HTTP_TIMEOUT=180 UV_LINK_MODE=copy \
+    uv sync --locked --package inkrag-platform --extra rag --no-dev --no-editable \
+    && useradd --uid 10001 --create-home app
+ENV PATH="/app/.venv/bin:$PATH" PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1 \
+    OPENBLAS_NUM_THREADS=1 OMP_NUM_THREADS=1
+USER 10001:10001
+EXPOSE 8010
+HEALTHCHECK --interval=30s --timeout=3s --start-period=120s CMD ["python", "-c", "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8010/health/live', timeout=2).read()"]
+CMD ["inkrag", "api"]

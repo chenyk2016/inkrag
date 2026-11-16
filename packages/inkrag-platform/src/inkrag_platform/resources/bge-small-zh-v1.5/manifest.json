@@ -1,0 +1,10 @@
+{
+  "model_id": "BAAI/bge-small-zh-v1.5",
+  "revision": "7999e1d3359715c523056ef9478215996d62a620",
+  "file": "tokenizer.json",
+  "sha256": "48cea5d44424912a6fd1ea647bf4fe50b55ab8b1e5879c3275f80e339e8fae26",
+  "license": "MIT",
+  "source": "https://huggingface.co/BAAI/bge-small-zh-v1.5/resolve/7999e1d3359715c523056ef9478215996d62a620/tokenizer.json",
+  "license_declaration": "https://huggingface.co/BAAI/bge-small-zh-v1.5/blob/7999e1d3359715c523056ef9478215996d62a620/README.md",
+  "license_text_source": "https://github.com/FlagOpen/FlagEmbedding/blob/master/LICENSE"
+}

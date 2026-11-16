@@ -1,0 +1,9 @@
+"""Jieba 在共享检索规则中使用的最小类型边界。"""
+
+from collections.abc import Iterator
+
+class Tokenizer:
+    tmp_dir: str | None
+    def __init__(self, dictionary: str | None = None) -> None: ...
+    def initialize(self, dictionary: str | None = None) -> None: ...
+    def cut(self, sentence: str, cut_all: bool = False, HMM: bool = True) -> Iterator[str]: ...

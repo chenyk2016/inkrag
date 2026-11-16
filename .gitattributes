@@ -1,0 +1,3 @@
+# Preserve the upstream model card byte-for-byte for the pinned artifact/license record.
+# Application code and generated evidence retain normal whitespace checks.
+packages/inkrag-platform/src/inkrag_platform/resources/bge-small-zh-v1.5/MODEL_CARD.md -whitespace

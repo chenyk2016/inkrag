@@ -1,0 +1,131 @@
+/* 评测内容随所属服务视口滚动，长标识与来源正文不撑破窄屏。 */
+.evaluation-report,
+.evaluation-question,
+.evaluation-source {
+  min-width: 0;
+  overflow-wrap: anywhere;
+}
+.evaluation-report > small,
+.evaluation-source > small {
+  display: block;
+  color: #6d7788;
+  margin-top: 6px;
+}
+.evaluation-report details > summary {
+  cursor: pointer;
+  padding: 12px 0;
+  font-weight: 600;
+}
+.evaluation-metrics {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 26px;
+  margin: 16px 0;
+}
+.evaluation-metrics dt {
+  font-size: 12px;
+  color: #637086;
+}
+.evaluation-metrics dd {
+  margin: 5px 0 0;
+  font-size: 19px;
+  font-variant-numeric: tabular-nums;
+}
+.evaluation-question {
+  padding: 20px 0;
+  border-top: 1px solid #dfe3e9;
+}
+.evaluation-question-heading {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: start;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+.evaluation-question h4 {
+  margin: 0;
+  font-size: 15px;
+  max-width: 65ch;
+}
+.evaluation-evidence-columns {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 250px), 1fr));
+  gap: 16px;
+}
+.evaluation-evidence-columns > section {
+  min-width: 0;
+}
+.evaluation-evidence-columns h5 {
+  margin: 16px 0 10px;
+  font-size: 13px;
+}
+.evaluation-source {
+  padding: 12px;
+  border: 1px solid #dfe3e9;
+  border-radius: 8px;
+  margin-bottom: 10px;
+  background: #f8f9fb;
+}
+.evaluation-missing .evaluation-source {
+  border-color: #e3c29c;
+  background: #fffaf2;
+}
+.evaluation-source-body {
+  white-space: pre-wrap;
+  line-height: 1.65;
+  font-size: 13px;
+}
+.evaluation-report pre,
+.request-diagnostics pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.request-diagnostics {
+  display: grid;
+  gap: 16px;
+}
+.request-diagnostics-dialog .ant-modal-body {
+  max-height: calc(100dvh - 200px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.request-diagnostics dl {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  gap: 9px 18px;
+  font-size: 13px;
+}
+.request-diagnostics dt {
+  color: #637086;
+}
+.request-diagnostics dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.trace-document-list {
+  display: grid;
+  gap: 8px;
+  padding-left: 20px;
+}
+.diagnostic-hit {
+  padding: 16px;
+  border: 1px solid #dfe3e9;
+  border-radius: 8px;
+  margin: 14px 0;
+}
+.diagnostic-hit > small {
+  display: block;
+  color: #637086;
+  margin: 6px 0 12px;
+  overflow-wrap: anywhere;
+}
+.diagnostic-channel-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 210px), 1fr));
+  gap: 18px;
+  margin: 14px 0;
+}
+.diagnostic-channel-grid h4 {
+  margin-bottom: 10px;
+}

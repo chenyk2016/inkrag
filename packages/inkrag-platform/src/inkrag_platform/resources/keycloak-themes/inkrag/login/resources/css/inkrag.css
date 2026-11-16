@@ -1,0 +1,156 @@
+/* 复用工作台的蓝色、灰阶和字体。登录交互及异常页沿用 Keycloak 模板。 */
+.login-pf body#keycloak-bg {
+  --ink-primary: #1766e8;
+  --ink-text: #273244;
+  --ink-border: #dfe4ec;
+  --pf-v5-global--FontFamily--sans-serif:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+  color: var(--ink-text);
+  background: #f5f6f8;
+}
+
+#keycloak-bg .pf-v5-c-login {
+  min-height: 100vh;
+  min-height: 100svh;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: center;
+  justify-items: center;
+  padding: clamp(16px, 5vw, 52px);
+  background:
+    radial-gradient(ellipse at 50% 2%, #e4efff 0, transparent 66%),
+    #f5f6f8;
+}
+
+#keycloak-bg .pf-v5-c-login__container {
+  display: block;
+  width: min(100%, 440px);
+  margin: 0;
+  padding: clamp(24px, 6vw, 40px);
+  background: #fff;
+  border: 1px solid #e1e7f0;
+  border-radius: 20px;
+  box-shadow: 0 24px 72px -34px #263e6a55, 0 2px 6px #17284008;
+}
+
+#keycloak-bg #kc-header {
+  padding: 0;
+  margin: 0 0 30px;
+}
+
+#keycloak-bg #kc-header-wrapper {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  height: auto;
+  margin: 0;
+  /* 父主题以 !important 将品牌文字设为白色。 */
+  color: var(--ink-text) !important;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  text-transform: none;
+}
+
+/* 方块图形沿用工作台品牌的图形语义，使用本地样式绘制。 */
+#kc-header-wrapper::before {
+  content: "";
+  flex: 0 0 38px;
+  height: 38px;
+  border-radius: 10px;
+  background:
+    linear-gradient(white, white) 11px 17px / 7px 9px,
+    linear-gradient(white, white) 20px 17px / 7px 9px,
+    linear-gradient(white, white) 16px 9px / 7px 6px,
+    #2169dc;
+  background-repeat: no-repeat;
+  box-shadow: 0 3px 8px #1d5bd326;
+}
+
+#keycloak-bg .pf-v5-c-login__main,
+#keycloak-bg .pf-v5-c-login__main-header,
+#keycloak-bg .pf-v5-c-login__main-body,
+#keycloak-bg .pf-v5-c-login__main-footer {
+  padding: 0;
+  background: transparent;
+  color: var(--ink-text);
+}
+
+#keycloak-bg .pf-v5-c-login__main-header {
+  border: 0;
+  margin-bottom: 23px;
+}
+
+#keycloak-bg .pf-v5-c-login__main {
+  box-shadow: none;
+}
+
+#kc-page-title {
+  font: inherit;
+  font-size: clamp(24px, 6vw, 29px);
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.035em;
+  overflow-wrap: anywhere;
+}
+
+#kc-form-login {
+  gap: 18px;
+}
+
+#kc-form-login .pf-v5-c-form__label {
+  color: var(--ink-text);
+  font-size: 14px;
+}
+
+#kc-form-login .pf-v5-c-form-control {
+  min-height: 46px;
+  border: 1px solid var(--ink-border);
+  font-size: 16px;
+  border-radius: 8px;
+  --pf-v5-c-form-control--before--BorderColor: var(--ink-border);
+  --pf-v5-c-form-control--after--BorderBottomColor: transparent;
+}
+
+#kc-form-login .pf-v5-c-form-control[aria-invalid="true"] {
+  border-color: #bd2832;
+}
+
+#kc-form-login .pf-v5-c-input-group .pf-v5-c-form-control {
+  border-radius: 8px 0 0 8px;
+}
+
+#password-show-password {
+  min-width: 46px;
+  min-height: 46px;
+  border: 1px solid var(--ink-border);
+  border-left: 0;
+  border-radius: 0 8px 8px 0;
+}
+
+#password-show-password::after {
+  border: 0;
+}
+
+#kc-login {
+  min-height: 46px;
+  border-radius: 8px;
+  background: var(--ink-primary);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+}
+
+#kc-login:hover {
+  background: #1157cd;
+}
+
+#kc-login:disabled {
+  opacity: 0.7;
+}
+
+#keycloak-bg :is(a, input, button, select):focus-visible {
+  outline: 2px solid #1766e8;
+  outline-offset: 2px;
+}

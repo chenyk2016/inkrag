@@ -1,0 +1,162 @@
+{
+  "$defs": {
+    "FileSource": {
+      "additionalProperties": false,
+      "description": "仅接受本地文件路径；URL和字节上传留给后续显式接入。",
+      "properties": {
+        "kind": {
+          "const": "file",
+          "default": "file",
+          "title": "Kind",
+          "type": "string"
+        },
+        "path": {
+          "maxLength": 4096,
+          "minLength": 1,
+          "title": "Path",
+          "type": "string"
+        },
+        "name": {
+          "anyOf": [
+            {
+              "maxLength": 255,
+              "minLength": 1,
+              "pattern": "^[^/\\\\\\x00]+$",
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Name"
+        }
+      },
+      "required": [
+        "path"
+      ],
+      "title": "FileSource",
+      "type": "object"
+    },
+    "ParseOptions": {
+      "additionalProperties": false,
+      "description": "明确解析工具与格式；缺省内置兼容旧包，Docling模型由宿主离线装配。",
+      "properties": {
+        "engine": {
+          "default": "builtin",
+          "enum": [
+            "builtin",
+            "docling"
+          ],
+          "title": "Engine",
+          "type": "string"
+        },
+        "ocr_enabled": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ocr Enabled"
+        },
+        "ocr_mode": {
+          "anyOf": [
+            {
+              "enum": [
+                "auto",
+                "full_page"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ocr Mode"
+        },
+        "table_structure": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Table Structure"
+        },
+        "table_mode": {
+          "anyOf": [
+            {
+              "enum": [
+                "fast",
+                "accurate"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Table Mode"
+        },
+        "format": {
+          "default": "auto",
+          "enum": [
+            "auto",
+            "text",
+            "markdown",
+            "pdf",
+            "html",
+            "json",
+            "xml",
+            "csv",
+            "docx",
+            "pptx",
+            "xlsx",
+            "image"
+          ],
+          "title": "Format",
+          "type": "string"
+        },
+        "max_bytes": {
+          "default": 20971520,
+          "maximum": 20971520,
+          "minimum": 1,
+          "title": "Max Bytes",
+          "type": "integer"
+        }
+      },
+      "title": "ParseOptions",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "description": "界面、代码与未来HTTP可共用的同步解析输入。",
+  "properties": {
+    "schema_version": {
+      "const": "inkparse.request.v1",
+      "default": "inkparse.request.v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "source": {
+      "$ref": "#/$defs/FileSource"
+    },
+    "options": {
+      "$ref": "#/$defs/ParseOptions"
+    }
+  },
+  "required": [
+    "source"
+  ],
+  "title": "ParseRequest",
+  "type": "object"
+}

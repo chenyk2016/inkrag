@@ -1,0 +1,992 @@
+{
+  "date": "2026-11-12",
+  "engine": "OpenSearch 3.3.2",
+  "jieba_version": "0.42.1",
+  "corpus": "chinese-evidence.json",
+  "corpus_sha256": "27307fdd0b5b64848de0179718677131b48e0b4265ffa28eaafaefadff290ae2",
+  "lexical_source_sha256": "82542d63587b3f5750a8ba31043f7d975682c02cd5a6b713a162266745d23466",
+  "query_source_sha256": "dc229331633097a86261f2f22cea6c363d5149e389ff7d79cd6fa6fd3e941738",
+  "design": {
+    "standard": "正文 + standard + BM25",
+    "jieba_terms": "共享 Jieba 词项 + whitespace + BM25；禁用独立编号路",
+    "jieba_identifiers": "词项 + BM25；纯编号精确查，混合问句优先编号",
+    "scope": "同组方案共享一个物理索引；单分片、固定语料与过滤，每题每方案预热 2 次和记录 7 次",
+    "limitations": "单机串行词检索，不含向量、模型、HTTP 业务服务和生产负载。金标外片段不等同全部不相关。"
+  },
+  "results": {
+    "fixture": {
+      "documents": 8,
+      "questions": 7,
+      "summary": {
+        "standard": {
+          "all_evidence_groups_in_top_5_or_expected_empty": 5,
+          "first_hit_labeled_or_expected_empty": 5,
+          "hits_outside_frozen_gold": 10,
+          "query_preparation_p95_ms": 0.006,
+          "http_round_trip_p95_ms": 1.089,
+          "opensearch_took_p95_ms": 0.0
+        },
+        "jieba_terms": {
+          "all_evidence_groups_in_top_5_or_expected_empty": 2,
+          "first_hit_labeled_or_expected_empty": 1,
+          "hits_outside_frozen_gold": 4,
+          "query_preparation_p95_ms": 0.029,
+          "http_round_trip_p95_ms": 0.983,
+          "opensearch_took_p95_ms": 0.0
+        },
+        "jieba_identifiers": {
+          "all_evidence_groups_in_top_5_or_expected_empty": 7,
+          "first_hit_labeled_or_expected_empty": 7,
+          "hits_outside_frozen_gold": 4,
+          "query_preparation_p95_ms": 0.029,
+          "http_round_trip_p95_ms": 1.536,
+          "opensearch_took_p95_ms": 0.0
+        }
+      },
+      "per_question": [
+        {
+          "id": "s01",
+          "question": "AB-123",
+          "groups": [
+            [
+              "fixture-target"
+            ]
+          ],
+          "cohort": "纯型号",
+          "query_terms": [],
+          "ranked_ids": {
+            "standard": [
+              "fixture-target",
+              "fixture-other",
+              "fixture-near"
+            ],
+            "jieba_terms": [],
+            "jieba_identifiers": [
+              "fixture-target"
+            ]
+          }
+        },
+        {
+          "id": "s02",
+          "question": "ａｂ－１２３",
+          "groups": [
+            [
+              "fixture-target"
+            ]
+          ],
+          "cohort": "全角与大小写",
+          "query_terms": [],
+          "ranked_ids": {
+            "standard": [],
+            "jieba_terms": [],
+            "jieba_identifiers": [
+              "fixture-target"
+            ]
+          }
+        },
+        {
+          "id": "s03",
+          "question": "AB-1234",
+          "groups": [
+            [
+              "fixture-near"
+            ]
+          ],
+          "cohort": "相近型号",
+          "query_terms": [],
+          "ranked_ids": {
+            "standard": [
+              "fixture-near",
+              "fixture-target"
+            ],
+            "jieba_terms": [],
+            "jieba_identifiers": [
+              "fixture-near"
+            ]
+          }
+        },
+        {
+          "id": "s04",
+          "question": "ZX-123",
+          "groups": [
+            [
+              "fixture-other"
+            ]
+          ],
+          "cohort": "共享编号尾缀",
+          "query_terms": [],
+          "ranked_ids": {
+            "standard": [
+              "fixture-other",
+              "fixture-target"
+            ],
+            "jieba_terms": [],
+            "jieba_identifiers": [
+              "fixture-other"
+            ]
+          }
+        },
+        {
+          "id": "s05",
+          "question": "AB-123 温度传感器故障",
+          "groups": [
+            [
+              "fixture-target"
+            ]
+          ],
+          "cohort": "型号与问句",
+          "query_terms": [
+            "温度传感器",
+            "故障"
+          ],
+          "ranked_ids": {
+            "standard": [
+              "fixture-target",
+              "fixture-other",
+              "fixture-near",
+              "fixture-side",
+              "fixture-sibling"
+            ],
+            "jieba_terms": [
+              "fixture-other",
+              "fixture-near",
+              "fixture-target",
+              "fixture-legacy",
+              "fixture-sibling"
+            ],
+            "jieba_identifiers": [
+              "fixture-target",
+              "fixture-other",
+              "fixture-near",
+              "fixture-legacy",
+              "fixture-sibling"
+            ]
+          }
+        },
+        {
+          "id": "s06",
+          "question": "AB-1239",
+          "groups": [],
+          "cohort": "未知型号",
+          "query_terms": [],
+          "ranked_ids": {
+            "standard": [
+              "fixture-near",
+              "fixture-target"
+            ],
+            "jieba_terms": [],
+            "jieba_identifiers": []
+          }
+        },
+        {
+          "id": "s07",
+          "question": "E102",
+          "groups": [
+            [
+              "fixture-legacy"
+            ]
+          ],
+          "cohort": "无连字符编号",
+          "query_terms": [],
+          "ranked_ids": {
+            "standard": [
+              "fixture-legacy"
+            ],
+            "jieba_terms": [],
+            "jieba_identifiers": [
+              "fixture-legacy"
+            ]
+          }
+        }
+      ]
+    },
+    "kubernetes": {
+      "documents": 43,
+      "questions": 13,
+      "summary": {
+        "standard": {
+          "all_evidence_groups_in_top_5_or_expected_empty": 12,
+          "first_hit_labeled_or_expected_empty": 11,
+          "hits_outside_frozen_gold": 41,
+          "query_preparation_p95_ms": 0.031,
+          "http_round_trip_p95_ms": 4.24,
+          "opensearch_took_p95_ms": 2.0
+        },
+        "jieba_terms": {
+          "all_evidence_groups_in_top_5_or_expected_empty": 11,
+          "first_hit_labeled_or_expected_empty": 9,
+          "hits_outside_frozen_gold": 42,
+          "query_preparation_p95_ms": 0.297,
+          "http_round_trip_p95_ms": 4.129,
+          "opensearch_took_p95_ms": 1.0
+        },
+        "jieba_identifiers": {
+          "all_evidence_groups_in_top_5_or_expected_empty": 11,
+          "first_hit_labeled_or_expected_empty": 9,
+          "hits_outside_frozen_gold": 42,
+          "query_preparation_p95_ms": 0.261,
+          "http_round_trip_p95_ms": 3.626,
+          "opensearch_took_p95_ms": 1.0
+        }
+      },
+      "per_question": [
+        {
+          "id": "q01",
+          "question": "Ingress 的请求匹配域名和 URL 路径后，转给的后端对象可用哪个标签查到它的全部端点分片？",
+          "groups": [
+            [
+              "in-route"
+            ],
+            [
+              "ep-owner"
+            ]
+          ],
+          "cohort": "multi",
+          "query_terms": [
+            "ingress",
+            "的",
+            "请求",
+            "匹配",
+            "域名",
+            "和",
+            "url",
+            "路径",
+            "后",
+            "转给",
+            "端",
+            "对象",
+            "可用",
+            "哪个",
+            "标签",
+            "查到",
+            "它",
+            "全部",
+            "端点",
+            "分片"
+          ],
+          "ranked_ids": {
+            "standard": [
+              "in-prefix",
+              "in-route",
+              "in-default",
+              "ep-owner",
+              "dns-srv"
+            ],
+            "jieba_terms": [
+              "in-default",
+              "in-prefix",
+              "in-route",
+              "dns-srv",
+              "in-protocol"
+            ],
+            "jieba_identifiers": [
+              "in-default",
+              "in-prefix",
+              "in-route",
+              "dns-srv",
+              "in-protocol"
+            ]
+          }
+        },
+        {
+          "id": "q02",
+          "question": "StatefulSet 用哪类 Service 管理 Pod 的网络域名？查这个 Service 本身的 A 或 AAAA 记录会拿到什么 IP？",
+          "groups": [
+            [
+              "ss-headless"
+            ],
+            [
+              "dns-name"
+            ]
+          ],
+          "cohort": "multi",
+          "query_terms": [
+            "statefulset",
+            "用",
+            "哪类",
+            "service",
+            "管理",
+            "pod",
+            "的",
+            "网络",
+            "域名",
+            "查",
+            "这个",
+            "本身",
+            "a",
+            "或",
+            "aaaa",
+            "记录",
+            "会",
+            "拿到",
+            "什么",
+            "ip"
+          ],
+          "ranked_ids": {
+            "standard": [
+              "dns-name",
+              "ss-headless",
+              "dns-srv",
+              "ep-pods",
+              "ep-owner"
+            ],
+            "jieba_terms": [
+              "dns-name",
+              "ss-headless",
+              "dns-srv",
+              "ep-pods",
+              "in-route"
+            ],
+            "jieba_identifiers": [
+              "dns-name",
+              "ss-headless",
+              "dns-srv",
+              "ep-pods",
+              "in-route"
+            ]
+          }
+        },
+        {
+          "id": "q03",
+          "question": "为有状态工作负载控制 Pod 网络域名的那类 Service，给命名端口做 SRV 查询时会返回一条还是多条？每条对应谁？",
+          "groups": [
+            [
+              "ss-headless"
+            ],
+            [
+              "dns-srv"
+            ]
+          ],
+          "cohort": "multi",
+          "query_terms": [
+            "为",
+            "有",
+            "状态",
+            "工作",
+            "负载",
+            "控制",
+            "pod",
+            "网络",
+            "域名",
+            "的",
+            "那类",
+            "service",
+            "给",
+            "命名",
+            "端口",
+            "做",
+            "srv",
+            "查询",
+            "时会",
+            "返回",
+            "一条",
+            "还是",
+            "多条",
+            "每条",
+            "对应",
+            "谁"
+          ],
+          "ranked_ids": {
+            "standard": [
+              "dns-srv",
+              "ss-headless",
+              "ep-pods",
+              "np-plugin",
+              "ttl-cascade"
+            ],
+            "jieba_terms": [
+              "dns-srv",
+              "ss-headless",
+              "ep-pods",
+              "np-dns",
+              "dns-name"
+            ],
+            "jieba_identifiers": [
+              "dns-srv",
+              "ss-headless",
+              "ep-pods",
+              "np-dns",
+              "dns-name"
+            ]
+          }
+        },
+        {
+          "id": "q04",
+          "question": "定时执行备份的控制器创建出来的任务，应该设哪个字段让它在成功或失败后自动清理？",
+          "groups": [
+            [
+              "cj-schedule",
+              "cj-template"
+            ],
+            [
+              "ttl-field"
+            ]
+          ],
+          "cohort": "multi",
+          "query_terms": [
+            "定时",
+            "执行",
+            "备份",
+            "的",
+            "控制器",
+            "创建",
+            "出来",
+            "任务",
+            "应该",
+            "设",
+            "哪个",
+            "字段",
+            "让",
+            "它",
+            "在",
+            "成功",
+            "或",
+            "失败",
+            "后",
+            "自动",
+            "清理"
+          ],
+          "ranked_ids": {
+            "standard": [
+              "cj-history",
+              "ttl-cascade",
+              "job-pods",
+              "ttl-field",
+              "cj-schedule"
+            ],
+            "jieba_terms": [
+              "ttl-cascade",
+              "ttl-field",
+              "job-pods",
+              "cj-history",
+              "cj-schedule"
+            ],
+            "jieba_identifiers": [
+              "ttl-cascade",
+              "ttl-field",
+              "job-pods",
+              "cj-history",
+              "cj-schedule"
+            ]
+          }
+        },
+        {
+          "id": "q05",
+          "question": "用 Cron 格式定时执行任务，实际负责反复运行 Pod 直到够数的是哪个对象？它的失败重试上限字段叫什么？",
+          "groups": [
+            [
+              "cj-schedule",
+              "cj-template"
+            ],
+            [
+              "job-pods"
+            ],
+            [
+              "job-retry"
+            ]
+          ],
+          "cohort": "multi",
+          "query_terms": [
+            "用",
+            "cron",
+            "格式",
+            "定时",
+            "执行",
+            "任务",
+            "实际",
+            "负责",
+            "反复",
+            "运行",
+            "pod",
+            "直到",
+            "够数",
+            "的",
+            "是",
+            "哪个",
+            "对象",
+            "它",
+            "失败",
+            "重试",
+            "上限",
+            "字段",
+            "叫",
+            "什么"
+          ],
+          "ranked_ids": {
+            "standard": [
+              "cj-schedule",
+              "job-pods",
+              "sa-cross",
+              "job-retry",
+              "cj-history"
+            ],
+            "jieba_terms": [
+              "job-pods",
+              "cj-schedule",
+              "sa-cross",
+              "cj-concurrency",
+              "ss-headless"
+            ],
+            "jieba_identifiers": [
+              "job-pods",
+              "cj-schedule",
+              "sa-cross",
+              "cj-concurrency",
+              "ss-headless"
+            ]
+          }
+        },
+        {
+          "id": "q06",
+          "question": "静态卷都匹配不上时，申领靠什么对象实现动态供给？在这个对象上用什么模式可延到使用该申领的 Pod 创建时再绑定？",
+          "groups": [
+            [
+              "pv-dynamic"
+            ],
+            [
+              "sc-wait"
+            ]
+          ],
+          "cohort": "multi",
+          "query_terms": [
+            "静态",
+            "卷",
+            "都",
+            "匹配",
+            "不上",
+            "时",
+            "申领",
+            "靠",
+            "什么",
+            "对象",
+            "实现",
+            "动态",
+            "供给",
+            "在",
+            "这个",
+            "上用",
+            "模式",
+            "可延",
+            "到",
+            "使用",
+            "该",
+            "的",
+            "pod",
+            "创建",
+            "再",
+            "绑定"
+          ],
+          "ranked_ids": {
+            "standard": [
+              "pv-dynamic",
+              "pv-bind",
+              "pv-retain",
+              "pv-protect",
+              "sa-cross"
+            ],
+            "jieba_terms": [
+              "pv-bind",
+              "pv-dynamic",
+              "pv-protect",
+              "sc-class",
+              "sc-wait"
+            ],
+            "jieba_identifiers": [
+              "pv-bind",
+              "pv-dynamic",
+              "pv-protect",
+              "sc-class",
+              "sc-wait"
+            ]
+          }
+        },
+        {
+          "id": "q07",
+          "question": "静态卷匹配失败后，动态提供的卷所用的回收策略由哪个对象决定？创建这个对象时没填回收策略，默认是什么？",
+          "groups": [
+            [
+              "pv-dynamic"
+            ],
+            [
+              "sc-policy"
+            ]
+          ],
+          "cohort": "multi",
+          "query_terms": [
+            "静态",
+            "卷",
+            "匹配",
+            "失败",
+            "后",
+            "动态",
+            "提供",
+            "的",
+            "所用",
+            "回收",
+            "策略",
+            "由",
+            "哪个",
+            "对象",
+            "决定",
+            "创建",
+            "这个",
+            "时",
+            "没填",
+            "默认",
+            "是",
+            "什么"
+          ],
+          "ranked_ids": {
+            "standard": [
+              "sc-policy",
+              "pv-retain",
+              "pv-bind",
+              "pv-dynamic",
+              "in-default"
+            ],
+            "jieba_terms": [
+              "sc-policy",
+              "pv-dynamic",
+              "pv-retain",
+              "in-default",
+              "pv-bind"
+            ],
+            "jieba_identifiers": [
+              "sc-policy",
+              "pv-dynamic",
+              "pv-retain",
+              "in-default",
+              "pv-bind"
+            ]
+          }
+        },
+        {
+          "id": "q08",
+          "question": "dev 的 Pod 借助服务账号访问 maintenance 的 Job，要把角色绑定建在哪？如果要把同一 ClusterRole 授权到所有名字空间，用哪种绑定？",
+          "groups": [
+            [
+              "sa-cross"
+            ],
+            [
+              "rb-ref",
+              "rb-scope"
+            ]
+          ],
+          "cohort": "multi",
+          "query_terms": [
+            "dev",
+            "的",
+            "pod",
+            "借助",
+            "服务",
+            "账号",
+            "访问",
+            "maintenance",
+            "job",
+            "要",
+            "把",
+            "角色",
+            "绑定",
+            "建在",
+            "哪",
+            "如果",
+            "同一",
+            "clusterrole",
+            "授权",
+            "到",
+            "所有",
+            "名字",
+            "空间",
+            "用",
+            "哪种"
+          ],
+          "ranked_ids": {
+            "standard": [
+              "sa-cross",
+              "rb-scope",
+              "rb-ref",
+              "ss-headless",
+              "pv-bind"
+            ],
+            "jieba_terms": [
+              "sa-cross",
+              "rb-ref",
+              "rb-scope",
+              "pv-protect",
+              "np-selector"
+            ],
+            "jieba_identifiers": [
+              "sa-cross",
+              "rb-ref",
+              "rb-scope",
+              "pv-protect",
+              "np-selector"
+            ]
+          }
+        },
+        {
+          "id": "q09",
+          "question": "HPA 用哪类 API 数据调整副本？要让它在集群可用，聚合层应为哪个 API 注册什么对象？",
+          "groups": [
+            [
+              "mt-use"
+            ],
+            [
+              "mt-api"
+            ]
+          ],
+          "cohort": "multi",
+          "query_terms": [
+            "hpa",
+            "用",
+            "哪类",
+            "api",
+            "数据",
+            "调整",
+            "副本",
+            "要",
+            "让",
+            "它",
+            "在",
+            "集群",
+            "可用",
+            "聚合",
+            "层",
+            "应为",
+            "哪个",
+            "注册",
+            "什么",
+            "对象"
+          ],
+          "ranked_ids": {
+            "standard": [
+              "mt-api",
+              "mt-use",
+              "mt-server",
+              "mt-autoscale",
+              "ss-order"
+            ],
+            "jieba_terms": [
+              "mt-api",
+              "mt-use",
+              "mt-server",
+              "ss-order",
+              "np-plugin"
+            ],
+            "jieba_identifiers": [
+              "mt-api",
+              "mt-use",
+              "mt-server",
+              "ss-order",
+              "np-plugin"
+            ]
+          }
+        },
+        {
+          "id": "q10",
+          "question": "网页请求命中 Ingress 的域名和路径规则后进入哪个对象？若这个对象有选择算符，它的端点切片会包含哪些 Pod？",
+          "groups": [
+            [
+              "in-route"
+            ],
+            [
+              "ep-pods"
+            ]
+          ],
+          "cohort": "multi",
+          "query_terms": [
+            "网页",
+            "请求",
+            "命中",
+            "ingress",
+            "的",
+            "域名",
+            "和",
+            "路径",
+            "规则",
+            "后",
+            "进入",
+            "哪个",
+            "对象",
+            "若",
+            "这个",
+            "有",
+            "选择",
+            "算符",
+            "它",
+            "端点",
+            "切片",
+            "会",
+            "包含",
+            "哪些",
+            "pod"
+          ],
+          "ranked_ids": {
+            "standard": [
+              "ep-pods",
+              "in-route",
+              "in-default",
+              "in-protocol",
+              "dns-srv"
+            ],
+            "jieba_terms": [
+              "in-default",
+              "in-route",
+              "ep-pods",
+              "in-protocol",
+              "dns-srv"
+            ],
+            "jieba_identifiers": [
+              "in-default",
+              "in-route",
+              "ep-pods",
+              "in-protocol",
+              "dns-srv"
+            ]
+          }
+        },
+        {
+          "id": "q11",
+          "question": "Kubernetes 控制面默认每个 EndpointSlice 最多放多少个端点？",
+          "groups": [
+            [
+              "ep-size"
+            ]
+          ],
+          "cohort": "single",
+          "query_terms": [
+            "kubernetes",
+            "控制",
+            "面",
+            "默认",
+            "每个",
+            "endpointslice",
+            "最多放",
+            "多少",
+            "个",
+            "端点"
+          ],
+          "ranked_ids": {
+            "standard": [
+              "ep-size",
+              "cj-history",
+              "ep-owner",
+              "ep-pods",
+              "ep-mirror"
+            ],
+            "jieba_terms": [
+              "ep-size",
+              "ep-pods",
+              "ep-owner",
+              "ep-type",
+              "mt-server"
+            ],
+            "jieba_identifiers": [
+              "ep-size",
+              "ep-pods",
+              "ep-owner",
+              "ep-type",
+              "mt-server"
+            ]
+          }
+        },
+        {
+          "id": "q12",
+          "question": "CronJob 默认保留多少个执行成功的历史 Job？",
+          "groups": [
+            [
+              "cj-history"
+            ]
+          ],
+          "cohort": "single",
+          "query_terms": [
+            "cronjob",
+            "默认",
+            "保留",
+            "多少",
+            "个",
+            "执行",
+            "成功",
+            "的",
+            "历史",
+            "job"
+          ],
+          "ranked_ids": {
+            "standard": [
+              "cj-history",
+              "job-pods",
+              "cj-schedule",
+              "cj-concurrency",
+              "job-retry"
+            ],
+            "jieba_terms": [
+              "cj-history",
+              "job-pods",
+              "cj-schedule",
+              "cj-concurrency",
+              "cj-template"
+            ],
+            "jieba_identifiers": [
+              "cj-history",
+              "job-pods",
+              "cj-schedule",
+              "cj-concurrency",
+              "cj-template"
+            ]
+          }
+        },
+        {
+          "id": "q13",
+          "question": "不想 Kubernetes 自动把服务账号凭据注入 Pod，Pod 规约要设置哪个字段和值？",
+          "groups": [
+            [
+              "sa-mount"
+            ]
+          ],
+          "cohort": "single",
+          "query_terms": [
+            "不想",
+            "kubernetes",
+            "自动",
+            "把",
+            "服务",
+            "账号",
+            "凭据",
+            "注入",
+            "pod",
+            "规约",
+            "要",
+            "设置",
+            "哪个",
+            "字段",
+            "和",
+            "值"
+          ],
+          "ranked_ids": {
+            "standard": [
+              "sa-mount",
+              "sa-cross",
+              "cj-history",
+              "in-protocol",
+              "sc-node"
+            ],
+            "jieba_terms": [
+              "sa-mount",
+              "sa-cross",
+              "ep-pods",
+              "mt-autoscale",
+              "cj-history"
+            ],
+            "jieba_identifiers": [
+              "sa-mount",
+              "sa-cross",
+              "ep-pods",
+              "mt-autoscale",
+              "cj-history"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

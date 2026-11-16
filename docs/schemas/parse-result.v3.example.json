@@ -1,0 +1,82 @@
+{
+  "schema_version": "inkparse.result.v3",
+  "revision": 1,
+  "previous_result_id": null,
+  "source": {
+    "name": "sensor.md",
+    "format": "markdown",
+    "sha256": "95782440a83b0e836819f516193cab5103599e897c1752bd92759c52a520eb2d",
+    "asset_id": null,
+    "size_bytes": 347
+  },
+  "options": {
+    "format": "auto",
+    "max_bytes": 20971520
+  },
+  "engine": {
+    "name": "utf8",
+    "version": "0.4.0a1",
+    "docling_core_version": "2.106.0"
+  },
+  "coverage": "text_only",
+  "document": {
+    "schema_name": "DoclingDocument",
+    "version": "1.11.0",
+    "name": "sensor.md",
+    "origin": null,
+    "furniture": {
+      "self_ref": "#/furniture",
+      "parent": null,
+      "children": [],
+      "content_layer": "furniture",
+      "meta": null,
+      "name": "_root_",
+      "label": "unspecified"
+    },
+    "body": {
+      "self_ref": "#/body",
+      "parent": null,
+      "children": [
+        {
+          "cref": "#/texts/0"
+        }
+      ],
+      "content_layer": "body",
+      "meta": null,
+      "name": "_root_",
+      "label": "unspecified"
+    },
+    "groups": [],
+    "texts": [
+      {
+        "self_ref": "#/texts/0",
+        "parent": {
+          "cref": "#/body"
+        },
+        "children": [],
+        "content_layer": "body",
+        "meta": null,
+        "label": "text",
+        "prov": [],
+        "orig": "# 空调故障处理手册\n\nE102表示温度传感器异常。出现此错误时，先断开电源，等待设备停止运转，再检查温度传感器接线是否松脱。接线正常但故障仍存在时，更换温度传感器并联系售后工程师。\n\n传感器故障与压缩机故障的处理方式不同，不要直接更换压缩机。\n",
+        "text": "# 空调故障处理手册\n\nE102表示温度传感器异常。出现此错误时，先断开电源，等待设备停止运转，再检查温度传感器接线是否松脱。接线正常但故障仍存在时，更换温度传感器并联系售后工程师。\n\n传感器故障与压缩机故障的处理方式不同，不要直接更换压缩机。\n",
+        "formatting": null,
+        "hyperlink": null
+      }
+    ],
+    "pictures": [],
+    "tables": [],
+    "key_value_items": [],
+    "form_items": [],
+    "pages": {}
+  },
+  "assets": [],
+  "warnings": [
+    {
+      "code": "raw_markdown",
+      "message": "保留Markdown原文，未重建结构层级",
+      "page": null
+    }
+  ],
+  "result_id": "e06f7fb2c1cef348994816226d32870c066b77ea6933f642908ceaf8129534f6"
+}

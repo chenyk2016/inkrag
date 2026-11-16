@@ -1,0 +1,1219 @@
+/* 正式应用高度链逐层收缩，文档、目录、表格只在自己的视口滚动。 */
+html,
+body,
+#root {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+#root > .workspace-framework {
+  height: 100%;
+  min-height: 0;
+  background: #f5f6f8;
+  color: #273244;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", sans-serif;
+}
+.product-shell {
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  overflow: hidden;
+}
+.product-sidebar {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 28px 18px 20px;
+  border-right: 1px solid #dfe3e9;
+  background: linear-gradient(150deg, #eef0f4, #e8edf3);
+  gap: 24px;
+}
+.product-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  font-size: 21px;
+  font-weight: 700;
+}
+.product-brand > span {
+  background: #2169dc;
+  color: white;
+  border-radius: 11px;
+  padding: 10px;
+  box-shadow: 0 3px 8px #1d5bd326;
+}
+.product-brand small {
+  display: block;
+  font-size: 10px;
+  font-weight: 400;
+  color: #6d7788;
+  margin-top: 3px;
+}
+.scope-label {
+  font-size: 11px;
+  color: #7a8596;
+  padding: 0 10px;
+}
+.product-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.product-sidebar nav a {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 11px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #526176;
+}
+.product-sidebar nav a.active {
+  background: #fff;
+  color: #145cc5;
+  box-shadow: 0 1px 4px #1d2c4410;
+  font-weight: 600;
+}
+.product-sidebar nav a:hover {
+  background: #ffffff9c;
+}
+.sidebar-foot {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 15px;
+}
+.sidebar-foot small {
+  color: #6d7788;
+  font-size: 10px;
+}
+.product-main {
+  min-width: 0;
+  min-height: 0;
+  height: 100%;
+  overflow: hidden;
+}
+.route-page {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 32px 36px 16px;
+  gap: 22px;
+  overflow: hidden;
+}
+.route-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  flex-shrink: 0;
+}
+.route-heading h1 {
+  font-size: 25px;
+  letter-spacing: -0.6px;
+  font-weight: 650;
+}
+.route-heading p {
+  color: #748095;
+  font-size: 12px;
+  margin-top: 8px;
+}
+.heading-actions,
+.inline-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.filter-bar {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+.filter-bar > .ant-input,
+.filter-bar > .ant-input-affix-wrapper {
+  width: 320px;
+  max-width: 100%;
+}
+.route-page > .review-scroll {
+  flex: 1;
+  min-height: 0;
+}
+.dashboard-body {
+  padding: 1px 4px 24px 1px;
+  display: grid;
+  gap: 24px;
+}
+.metric-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.metric-card {
+  padding: 22px 24px;
+  background: white;
+  border: 1px solid #e0e5ec;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 2px 4px #18243d03;
+}
+.metric-card small {
+  color: #778398;
+}
+.metric-card strong {
+  font-size: 32px;
+  font-weight: 600;
+  line-height: 1.3;
+}
+.metric-card span {
+  font-size: 10px;
+  color: #3e79cc;
+}
+.metric-card:hover,
+.collection-card:hover {
+  border-color: #a7c0e9;
+  box-shadow: 0 3px 12px #1a4f9910;
+}
+.welcome-card {
+  display: flex;
+  gap: 22px;
+  padding: 28px;
+  background: linear-gradient(110deg, #eaf1ff, #f5f8ff);
+  border: 1px solid #d9e5fa;
+  border-radius: 12px;
+  color: #244365;
+}
+.welcome-card h2 {
+  font-size: 19px;
+}
+.welcome-card p {
+  font-size: 12px;
+  color: #6d7f99;
+  margin: 8px 0 18px;
+}
+.surface {
+  background: white;
+  border: 1px solid #e2e7ef;
+  border-radius: 10px;
+  padding: 22px;
+  margin-bottom: 14px;
+  min-width: 0;
+}
+.surface h2 {
+  font-size: 16px;
+  margin-bottom: 16px;
+}
+.surface h3 {
+  margin-bottom: 10px;
+}
+.collection-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 20px;
+  padding: 2px 6px 20px 2px;
+}
+.collection-card {
+  padding: 24px;
+  background: white;
+  border: 1px solid #e0e5ec;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 14px;
+  min-width: 0;
+}
+.collection-card h2 {
+  font-size: 17px;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+.collection-icon {
+  padding: 12px;
+  border: 1px solid #dde7f6;
+  border-radius: 10px;
+  color: #3272cc;
+  background: #f2f6fd;
+}
+.collection-counts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  color: #76849a;
+  font-size: 11px;
+}
+.card-link {
+  font-size: 11px;
+  color: #296bcb;
+  margin-top: 9px;
+}
+.pagination {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  padding-top: 8px;
+  border-top: 1px solid #e2e7ef;
+  flex-shrink: 0;
+}
+.pagination > span {
+  margin-right: auto;
+  color: #78859a;
+  font-size: 11px;
+}
+.product-table {
+  border-collapse: collapse;
+  width: 100%;
+  font-size: 12px;
+  min-width: 650px;
+}
+.product-table th {
+  text-align: left;
+  padding: 14px 18px;
+  background: #f0f3f8;
+  color: #77869a;
+  font-weight: 500;
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+.product-table td {
+  border-bottom: 1px solid #e6ebf2;
+  padding: 18px;
+  max-width: 340px;
+  overflow-wrap: anywhere;
+  vertical-align: top;
+}
+.product-table td > small {
+  display: block;
+  color: #8a95a7;
+  font-size: 10px;
+  margin-top: 6px;
+}
+.product-table strong {
+  font-weight: 550;
+}
+.task-error {
+  display: block;
+  color: #b43d3d;
+  font-size: 11px;
+  margin-top: 7px;
+}
+.empty-copy {
+  padding: 22px;
+  color: #7c899e;
+}
+.route-empty {
+  padding: 80px 30px;
+  text-align: center;
+  color: #7e899b;
+  display: grid;
+  justify-items: center;
+  gap: 18px;
+}
+.route-empty h2 {
+  font-size: 20px;
+  color: #53647b;
+}
+.stack-form,
+.studio-form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  margin-top: 22px;
+}
+.stack-form label:not(.ant-checkbox-wrapper):not(.ant-radio-wrapper),
+.studio-form label:not(.ant-checkbox-wrapper):not(.ant-radio-wrapper) {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-size: 12px;
+}
+.dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+.form-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+}
+.studio-form {
+  padding: 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+  min-width: 0;
+}
+.studio-form > p,
+.help-copy {
+  font-size: 12px;
+  color: #77869b;
+}
+.studio-form > h2 {
+  font-size: 19px;
+}
+
+.checkbox-label {
+  flex-direction: row !important;
+  align-items: center;
+}
+.studio-form fieldset {
+  border: 1px solid #dfe5ed;
+  border-radius: 8px;
+  padding: 16px;
+}
+.studio-form pre,
+.surface pre {
+  font-size: 11px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: #f5f7fa;
+  padding: 16px;
+  border-radius: 8px;
+}
+.service-studio {
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+  overflow: hidden;
+  display: flex;
+}
+.service-tabs {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  width: 100%;
+}
+.service-tabs > .ant-tabs-nav {
+  flex: none;
+}
+/* Ant Design 6 的真实结构是 body-holder → body → content[role=tabpanel]。
+   三层都允许收缩，避免正文按长表单高度撑开，导致保存按钮离开滚动视口。 */
+.service-tabs > .ant-tabs-body-holder,
+.service-tabs > .ant-tabs-body-holder > .ant-tabs-body,
+.service-tabs .ant-tabs-body > [role="tabpanel"] {
+  flex: 1;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+.service-tabs > .ant-tabs-body-holder,
+.service-tabs > .ant-tabs-body-holder > .ant-tabs-body {
+  display: flex;
+}
+.service-tabs
+  .ant-tabs-body
+  > [role="tabpanel"][aria-hidden="false"]:not([hidden]) {
+  display: flex;
+}
+.service-tabs .ant-tabs-body > [role="tabpanel"][aria-hidden="true"],
+.service-tabs .ant-tabs-body > [role="tabpanel"][hidden] {
+  display: none;
+}
+.service-tabs .ant-tabs-body > [role="tabpanel"] > .review-scroll {
+  flex: 1;
+  min-height: 0;
+}
+.trial-results {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 18px;
+}
+.trial-hit {
+  padding: 18px 0;
+  border-bottom: 1px solid #edf0f5;
+}
+.trial-hit p {
+  font-size: 12px;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  margin: 10px 0;
+}
+.library-tabs {
+  display: flex;
+  gap: 18px;
+  flex-shrink: 0;
+  border-bottom: 1px solid #e1e6ee;
+  padding: 4px 0 15px;
+  margin-top: 12px;
+}
+.embedded-workbench.app-shell {
+  display: block;
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+  background: transparent;
+}
+/* 知识库内：左侧菜单 + 内容视口，各自有界滚动。 */
+.knowledge-layout {
+  height: 100%;
+  min-height: 0;
+  display: grid;
+  grid-template-columns: 212px minmax(0, 1fr);
+  overflow: hidden;
+}
+.knowledge-sidebar {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  gap: 18px;
+  padding: 18px 14px;
+  border-right: 1px solid #e3e7ee;
+  background: #fbfcfd;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.knowledge-sidebar-head {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 0 4px;
+}
+.knowledge-sidebar-head h2 {
+  font-size: 15px;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+.knowledge-back.ant-btn {
+  align-self: flex-start;
+  padding-inline: 6px;
+  color: #6d7788;
+}
+.knowledge-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.knowledge-sidebar nav button {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  font-size: 13px;
+  color: #526176;
+  text-align: left;
+  cursor: pointer;
+}
+.knowledge-sidebar nav button:hover {
+  background: #f0f3f7;
+}
+.knowledge-sidebar nav button.active {
+  background: #eaf1fb;
+  color: #145cc5;
+  font-weight: 600;
+}
+.knowledge-upload.ant-btn {
+  margin-top: auto;
+}
+.embedded-workbench .workspace {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  margin: 0;
+  padding: 0 28px 18px;
+  max-width: none;
+}
+.embedded-workbench .app-header {
+  flex-shrink: 0;
+  height: 58px;
+}
+.embedded-workbench .page-heading {
+  flex-shrink: 0;
+  margin: 18px 0;
+  min-height: 50px;
+}
+.embedded-workbench .page-heading h1 {
+  font-size: 22px;
+}
+.embedded-workbench .documents-layout {
+  flex: 1;
+  min-height: 0;
+  height: auto;
+  overflow: hidden;
+  grid-template-columns: 260px minmax(0, 1fr);
+}
+.embedded-workbench .document-list {
+  height: 100%;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  width: auto;
+}
+.embedded-workbench .document-list-items {
+  flex: 1;
+  min-height: 0;
+  max-height: none;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.embedded-workbench .review-panel {
+  height: 100%;
+  min-height: 0;
+  overflow: hidden;
+}
+.embedded-workbench .search-view {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.embedded-workbench .settings-view,
+.embedded-workbench .management {
+  max-width: none;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.embedded-workbench .management {
+  flex: 1;
+}
+.knowledge-picker {
+  height: 100%;
+  overflow: auto;
+}
+.breadcrumb {
+  flex-wrap: wrap;
+}
+.breadcrumb .ant-btn {
+  font-size: 11px;
+}
+.product-main a:not(.ant-btn):focus-visible,
+.product-main summary:focus-visible {
+  outline: 3px solid #9abfff;
+  outline-offset: 3px;
+}
+@media (min-width: 1600px) {
+  .embedded-workbench .documents-layout {
+    grid-template-columns: 280px minmax(0, 1fr);
+  }
+}
+@media (max-width: 1100px) {
+  .product-shell {
+    grid-template-columns: 180px minmax(0, 1fr);
+  }
+  .product-sidebar {
+    padding: 22px 12px;
+  }
+  .product-brand {
+    font-size: 18px;
+  }
+  .route-page {
+    padding: 24px 22px 14px;
+  }
+  .embedded-workbench > .workspace {
+    padding: 0 18px 12px;
+  }
+  .embedded-workbench .documents-layout {
+    grid-template-columns: 210px minmax(0, 1fr);
+  }
+  .metric-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 760px) {
+  .product-shell {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .product-sidebar {
+    border-right: 0;
+    border-bottom: 1px solid #dde4ef;
+    padding: 10px 14px;
+    gap: 8px;
+    flex-direction: row;
+    align-items: center;
+    overflow-x: auto;
+    overscroll-behavior: contain;
+  }
+  .product-brand {
+    font-size: 15px;
+    flex-shrink: 0;
+  }
+  .product-brand > span {
+    padding: 7px;
+  }
+  .product-brand small,
+  .scope-label,
+  .sidebar-foot {
+    display: none;
+  }
+  .product-sidebar nav {
+    flex-direction: row;
+    gap: 4px;
+    margin-left: auto;
+  }
+  .product-sidebar nav a {
+    white-space: nowrap;
+    font-size: 11px;
+    padding: 8px;
+  }
+  .product-sidebar nav svg {
+    display: none;
+  }
+  .route-page {
+    padding: 20px 16px 12px;
+    gap: 16px;
+  }
+  .route-heading {
+    align-items: flex-start;
+  }
+  .route-heading h1 {
+    font-size: 21px;
+  }
+  .route-heading p {
+    font-size: 11px;
+  }
+  .heading-actions .ant-btn {
+    font-size: 11px;
+  }
+  .metric-card {
+    padding: 18px;
+  }
+  .welcome-card {
+    padding: 20px;
+  }
+  .collection-grid {
+    grid-template-columns: 1fr;
+  }
+  .embedded-workbench .documents-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .embedded-workbench .document-list {
+    max-height: 190px;
+    flex-shrink: 0;
+  }
+  .embedded-workbench .document-list-items {
+    max-height: 100px;
+  }
+  .embedded-workbench .review-panel {
+    flex: 1;
+    min-height: 240px;
+  }
+  .embedded-workbench > .workspace {
+    padding: 0 12px 10px;
+  }
+  .embedded-workbench .page-heading {
+    margin: 12px 0;
+    min-height: 0;
+  }
+  .embedded-workbench .app-header {
+    height: auto;
+    min-height: 40px;
+  }
+  .embedded-workbench .page-heading h1 {
+    font-size: 18px;
+  }
+  .embedded-workbench .page-heading p {
+    display: none;
+  }
+  .library-tabs {
+    gap: 12px;
+    padding-bottom: 10px;
+    overflow-x: auto;
+  }
+  .library-tabs .ant-btn {
+    white-space: nowrap;
+    font-size: 11px;
+  }
+  .form-columns {
+    grid-template-columns: 1fr;
+  }
+  .studio-form {
+    padding: 18px;
+  }
+  .filter-bar {
+    flex-wrap: wrap;
+  }
+  .product-table td,
+  .product-table th {
+    padding: 12px;
+  }
+  .service-tabs > .ant-tabs-nav {
+    overflow-x: auto;
+    flex-shrink: 0;
+  }
+  .metric-card strong {
+    font-size: 27px;
+  }
+}
+
+.recovery-pane {
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+  overflow: auto;
+  max-height: 100%;
+  overscroll-behavior: contain;
+}
+/* 审校时收起重复页标题，把空间归还原文和结果。专注模式仍保留全局导航及退出按钮。 */
+.embedded-workbench .document-is-open .page-heading {
+  padding: 0;
+  margin: 7px 0;
+  min-height: 32px;
+}
+.document-is-open .page-heading > div:first-child {
+  display: none;
+}
+.document-is-open .page-heading .heading-actions {
+  padding: 0;
+  width: 100%;
+  justify-content: flex-end;
+}
+.document-is-open .app-header {
+  height: 42px;
+}
+.document-is-open .library-tabs {
+  margin-top: 0;
+  padding: 7px 0;
+  gap: 16px;
+}
+.document-is-open .workspace-summary {
+  margin-bottom: 8px;
+  gap: 16px;
+}
+.document-is-open > .message-banner {
+  padding: 6px 12px;
+  margin-bottom: 8px;
+  min-height: 0;
+}
+.document-is-open .review-studio-toolbar {
+  padding: 10px 14px;
+}
+.document-is-open .review-studio-status {
+  padding: 6px 14px;
+}
+.document-is-open .review-studio-footer {
+  padding: 9px 14px;
+}
+.document-is-open .review-pane-heading {
+  min-height: 34px;
+  padding: 6px 12px;
+}
+.document-is-open .review-preview-controls {
+  min-height: 34px;
+  padding: 5px 10px;
+}
+.document-is-open .review-pagination {
+  padding: 6px 12px;
+}
+.focus-review .app-header,
+.focus-review .library-tabs,
+.focus-review .workspace-summary,
+.focus-review .document-list {
+  display: none;
+}
+.embedded-workbench .focus-review .documents-layout {
+  grid-template-columns: minmax(0, 1fr);
+}
+.focus-review > .message-banner {
+  font-size: 11px;
+}
+.focus-review .review-studio-title h2 {
+  max-width: 45vw;
+}
+
+.publication-dialog .ant-modal-body {
+  max-height: calc(100dvh - 200px);
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.publication-summary {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 20px 0;
+}
+.publication-manifest {
+  max-height: 35dvh;
+  overflow: auto;
+  overscroll-behavior: contain;
+  margin: 14px 0;
+}
+.publication-dialog pre {
+  font-size: 11px;
+  white-space: pre-wrap;
+  background: #f5f7fb;
+  padding: 12px;
+}
+
+.task-collection-options {
+  max-height: 50dvh;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px 0;
+  overscroll-behavior: contain;
+}
+.task-collection-options .ant-btn {
+  justify-content: space-between;
+}
+
+.library-settings {
+  padding: 20px;
+}
+.library-settings > .settings-card {
+  margin-bottom: 22px;
+}
+
+/* Ant Design 复合控件在表单中占满字段列，不给内部 input 再画一层边框。 */
+.stack-form .ant-select,
+.stack-form .ant-input-number,
+.stack-form-field .ant-select,
+.stack-form-field .ant-input-number,
+.studio-form .ant-select,
+.studio-form .ant-input-number,
+.form-columns .ant-select,
+.form-columns .ant-input-number {
+  width: 100%;
+  min-width: 0;
+}
+.stack-form-field {
+  display: grid;
+  gap: 8px;
+  min-width: 0;
+}
+.form-columns > label,
+.stack-form > label,
+.studio-form > label {
+  min-width: 0;
+}
+.filter-bar {
+  flex-wrap: wrap;
+}
+.filter-bar > .ant-select {
+  min-width: 142px;
+  max-width: 100%;
+}
+.task-collection-options .ant-btn {
+  height: auto;
+  min-height: 34px;
+  white-space: normal;
+  text-align: left;
+}
+.task-collection-options .ant-tag {
+  flex: none;
+}
+/* 登录与状态入口也沿用同一高度链，窗口较矮时由入口自身滚动。 */
+.connect-page {
+  height: 100%;
+  min-height: 0;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.knowledge-picker {
+  min-height: 0;
+  margin: 0 auto;
+}
+@media (max-width: 760px) {
+  .route-heading {
+    flex-wrap: wrap;
+  }
+  .filter-bar > .ant-input,
+  .filter-bar > .ant-input-affix-wrapper {
+    flex: 1 1 200px;
+    width: auto;
+  }
+  .studio-form {
+    padding: 16px 12px;
+  }
+  .pagination {
+    flex-wrap: wrap;
+  }
+}
+
+.task-dashboard-next,
+.task-dashboard-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.task-dashboard-next {
+  background: #eef3ff;
+  border: 1px solid #dfe7fa;
+  padding: clamp(18px, 4vw, 30px);
+  border-radius: 14px;
+}
+.task-dashboard-next h2,
+.task-dashboard-next p,
+.task-dashboard-heading h2,
+.task-dashboard .collection-card h3 {
+  margin: 0;
+}
+.task-dashboard-next p {
+  margin-top: 6px;
+}
+.task-dashboard-heading {
+  margin-bottom: 12px;
+}
+.task-dashboard .collection-card h3 {
+  overflow-wrap: anywhere;
+}
+
+/* 上传向导：独立全页三步流程，只保留左侧菜单与上传内容。 */
+.upload-wizard {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 28px 8px 20px;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.upload-wizard-steps {
+  flex-shrink: 0;
+  max-width: 760px;
+}
+.upload-step {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-width: 760px;
+}
+.upload-step h2 {
+  font-size: 18px;
+  margin: 0;
+}
+.upload-section-title {
+  margin-top: 10px;
+}
+.upload-file-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.upload-file-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 12px;
+  border: 1px solid #e3e7ee;
+  border-radius: 8px;
+  background: #fff;
+}
+.upload-file-list small {
+  color: #7a8596;
+  flex-shrink: 0;
+}
+.upload-engine-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.upload-engine-options .ant-radio-wrapper {
+  align-items: flex-start;
+  padding: 10px 12px;
+  border: 1px solid #e3e7ee;
+  border-radius: 8px;
+  margin-inline-start: 0;
+}
+.upload-engine-options .ant-radio-wrapper div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.upload-engine-options .ant-radio-wrapper small {
+  color: #7a8596;
+}
+.upload-extra-option {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 12px;
+  border: 1px dashed #e3e7ee;
+  border-radius: 8px;
+  color: #9aa4b2;
+}
+.upload-extra-option input {
+  margin-top: 4px;
+}
+.upload-extra-option div {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.upload-extra-option small {
+  color: #aab3bf;
+}
+.upload-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.upload-field label {
+  font-size: 12px;
+  color: #526176;
+}
+.upload-wizard-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  max-width: 760px;
+}
+.upload-busy {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #526176;
+}
+
+/* 库内按用户任务分组；低频接入与运行不挤占资料和检索入口。 */
+.knowledge-nav-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.knowledge-nav-label {
+  font-size: 11px;
+  color: #7b8797;
+  padding: 10px 12px 3px;
+}
+.knowledge-sidebar nav button {
+  flex-shrink: 0;
+}
+.retrieval-target {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding-bottom: 16px;
+}
+.retrieval-target span {
+  color: #65758a;
+  font-size: 12px;
+}
+.embedded-workbench .search-page {
+  flex: 1;
+  min-height: 0;
+  overflow: auto;
+  width: 100%;
+  max-width: none;
+  padding: 0 0 18px;
+}
+.retrieval-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.8fr) minmax(0, 1.2fr);
+  gap: 20px;
+  align-items: start;
+}
+.retrieval-grid .search-form {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  margin: 0;
+  padding: 20px;
+}
+.retrieval-grid .search-form .query-input {
+  min-width: 0;
+  width: 100%;
+}
+.retrieval-grid .search-form .inline-actions {
+  flex-wrap: wrap;
+}
+.retrieval-results {
+  min-width: 0;
+}
+.retrieval-results .results-summary {
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 0;
+}
+.retrieval-results .search-hit {
+  margin-bottom: 12px;
+}
+.request-snapshot {
+  padding: 12px 0;
+  font-size: 12px;
+  color: #627086;
+}
+.request-snapshot pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+.service-studio > .review-scroll {
+  flex: 1;
+  min-height: 0;
+}
+@media (max-width: 1100px) {
+  .retrieval-grid {
+    grid-template-columns: 1fr;
+  }
+}
+@media (max-width: 760px) {
+  .knowledge-layout {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto minmax(0, 1fr);
+  }
+  .knowledge-sidebar {
+    padding: 10px 12px;
+    gap: 8px;
+    border-right: 0;
+    border-bottom: 1px solid #e3e7ee;
+    overflow: visible;
+  }
+  .knowledge-sidebar-head {
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+  .knowledge-sidebar-head h2 {
+    font-size: 13px;
+    flex: 1;
+  }
+  .knowledge-sidebar nav {
+    flex-direction: row;
+    overflow-x: auto;
+    padding-bottom: 4px;
+  }
+  .knowledge-nav-group {
+    flex-direction: row;
+    flex-shrink: 0;
+    border-right: 1px solid #e3e7ee;
+    padding-right: 5px;
+  }
+  .knowledge-nav-label {
+    display: none;
+  }
+  .knowledge-sidebar nav button {
+    white-space: nowrap;
+    padding: 8px 10px;
+  }
+  .knowledge-upload.ant-btn {
+    align-self: flex-start;
+    margin-top: 0;
+  }
+  .embedded-workbench .workspace {
+    padding: 0 12px 12px;
+  }
+  .retrieval-grid .search-form {
+    padding: 14px;
+  }
+}

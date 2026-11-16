@@ -1,0 +1,139 @@
+{
+  "schema_version": "inkparse.result.v3",
+  "revision": 1,
+  "previous_result_id": null,
+  "source": {
+    "name": "illustrated.pdf",
+    "format": "pdf",
+    "sha256": "30f9f646e654f09b7d697f8dc778563632ba74396f54d11eca5f7e73500d6216",
+    "asset_id": "30f9f646e654f09b7d697f8dc778563632ba74396f54d11eca5f7e73500d6216",
+    "size_bytes": 993
+  },
+  "options": {
+    "format": "auto",
+    "max_bytes": 20971520
+  },
+  "engine": {
+    "name": "pypdf",
+    "version": "0.4.0a1",
+    "docling_core_version": "2.106.0"
+  },
+  "coverage": "text_only",
+  "document": {
+    "schema_name": "DoclingDocument",
+    "version": "1.11.0",
+    "name": "illustrated.pdf",
+    "origin": null,
+    "furniture": {
+      "self_ref": "#/furniture",
+      "parent": null,
+      "children": [],
+      "content_layer": "furniture",
+      "meta": null,
+      "name": "_root_",
+      "label": "unspecified"
+    },
+    "body": {
+      "self_ref": "#/body",
+      "parent": null,
+      "children": [
+        {
+          "cref": "#/pictures/0"
+        },
+        {
+          "cref": "#/texts/0"
+        }
+      ],
+      "content_layer": "body",
+      "meta": null,
+      "name": "_root_",
+      "label": "unspecified"
+    },
+    "groups": [],
+    "texts": [
+      {
+        "self_ref": "#/texts/0",
+        "parent": {
+          "cref": "#/body"
+        },
+        "children": [],
+        "content_layer": "body",
+        "meta": null,
+        "label": "text",
+        "prov": [
+          {
+            "page_no": 1,
+            "bbox": {
+              "l": 0.0,
+              "t": 0.0,
+              "r": 612.0,
+              "b": 792.0,
+              "coord_origin": "TOPLEFT"
+            },
+            "charspan": [
+              0,
+              82
+            ]
+          }
+        ],
+        "orig": "E102 indicates a temperature sensor fault. Turn off power and check sensor wiring.",
+        "text": "E102 indicates a temperature sensor fault. Turn off power and check sensor wiring.",
+        "formatting": null,
+        "hyperlink": null
+      }
+    ],
+    "pictures": [
+      {
+        "self_ref": "#/pictures/0",
+        "parent": {
+          "cref": "#/body"
+        },
+        "children": [],
+        "content_layer": "body",
+        "meta": null,
+        "label": "picture",
+        "prov": [],
+        "captions": [],
+        "references": [],
+        "footnotes": [],
+        "image": null,
+        "annotations": []
+      }
+    ],
+    "tables": [],
+    "key_value_items": [],
+    "form_items": [],
+    "pages": {
+      "1": {
+        "size": {
+          "width": 612.0,
+          "height": 792.0
+        },
+        "image": null,
+        "page_no": 1
+      }
+    }
+  },
+  "assets": [
+    {
+      "asset_id": "b1ff9c8ea3a780bad09b346c423d2d0e46815926879b18e841d928376a946640",
+      "element_ref": "#/pictures/0",
+      "role": "image",
+      "page": 1,
+      "media_type": "image/png"
+    }
+  ],
+  "warnings": [
+    {
+      "code": "pdf_text_only",
+      "message": "仅提取文本；表格、图片与复杂阅读顺序未重建，区域为整页",
+      "page": null
+    },
+    {
+      "code": "image_page_only",
+      "message": "保存嵌入位图并关联物理页，未恢复图片区域/矢量图或理解图片",
+      "page": 1
+    }
+  ],
+  "result_id": "1ace08e8d4fcd27832c01957da09ec25dce14d11cb717b26f4bc65f798d0252a"
+}

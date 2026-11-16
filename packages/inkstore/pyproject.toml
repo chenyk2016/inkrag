@@ -1,0 +1,24 @@
+[project]
+name = "inkstore"
+version = "0.1.0a1"
+description = "独立可注入的资产存储接口与本地实现"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+requires-python = ">=3.12,<3.13"
+dependencies = ["pydantic>=2.10,<3", "filelock>=4.2.9,<5"]
+
+[project.urls]
+Source = "https://github.com/chenyk2016/inkrag/tree/main/packages/inkstore"
+Documentation = "https://github.com/chenyk2016/inkrag/blob/main/docs/asset-storage.md"
+Issues = "https://github.com/chenyk2016/inkrag/issues"
+
+[project.optional-dependencies]
+s3 = ["boto3>=1.37,<2"]
+
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/inkstore"]

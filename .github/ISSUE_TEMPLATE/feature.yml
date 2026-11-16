@@ -1,0 +1,26 @@
+name: 建议改进
+description: 提出功能、文档或使用流程上的改进
+title: "[建议] "
+body:
+  - type: markdown
+    attributes:
+      value: 此建议会公开。请使用可公开的示例，移除真实原件、凭据和个人信息。
+  - type: textarea
+    id: use_case
+    attributes:
+      label: 你要完成什么
+      description: 说明使用场景、入口，以及现有流程在哪里卡住。
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: 希望看到什么结果
+      description: 给出一个可用来确认改进是否有效的例子。
+    validations:
+      required: true
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: 已尝试的方法或参考资料
+      description: 可附替代做法、相关 issue 或你愿意分享的最小示例。

@@ -1,0 +1,469 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>从零搭一个可查证的 RAG · InkRAG 教程</title>
+<style>
+:root {
+  --paper: #f8f7f2; --white: #fffefa; --ink: #202a26; --muted: #52625b;
+  --rule: #ced8d0; --green: #125747; --deep: #0e3d34; --wash: #e8f0e9;
+  --warm: #9a4926; --sand: #f4e8d8; --mono: "IBM Plex Mono", "SFMono-Regular", Consolas, monospace;
+  font-family: "Source Sans 3", "PingFang SC", "Noto Sans CJK SC", "Microsoft Yahei", sans-serif;
+  color: var(--ink); background: var(--paper); line-height: 1.72;
+}
+* { box-sizing: border-box; }
+body { margin: 0; }
+a { color: var(--green); text-underline-offset: .19em; text-decoration-thickness: .08em; }
+a:hover { text-decoration-thickness: .14em; }
+:focus-visible { outline: 3px solid #a34d22; outline-offset: 4px; }
+.skip { position: absolute; left: .8rem; top: .6rem; transform: translateY(-150%); background: var(--white); padding: .4rem .8rem; z-index: 2; }
+.skip:focus { transform: none; }
+.masthead { background: var(--deep); color: #f8fff9; }
+.masthead .wrap { max-width: 1180px; margin: 0 auto; padding: .95rem 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.masthead a { color: #e4f4ea; }
+.brand { font-weight: 760; font-size: 1.12rem; letter-spacing: .035em; }
+.shell { display: grid; grid-template-columns: 202px minmax(0, 800px); gap: clamp(2rem, 5vw, 5rem); max-width: 1180px; margin: 0 auto; padding: 2.7rem 2rem 5rem; }
+aside { align-self: start; position: sticky; top: 2rem; }
+aside strong { font-size: .95rem; }
+aside nav ul { padding: 0; margin: .65rem 0 0; list-style: none; border-top: 1px solid var(--rule); }
+aside nav a { display: block; padding: .53rem .35rem; border-bottom: 1px solid var(--rule); text-decoration: none; color: var(--ink); font-size: .91rem; }
+aside nav a:hover, aside nav a[aria-current="location"] { color: var(--green); background: var(--wash); }
+main { min-width: 0; }
+.hero { border-bottom: 2px solid var(--deep); padding: 0 0 2.2rem; }
+.context { margin: 0 0 .6rem; color: var(--green); font-size: .92rem; font-weight: 720; }
+h1, h2 { font-family: "Source Han Serif SC", "Songti SC", SimSun, Georgia, serif; color: var(--deep); line-height: 1.25; }
+h1 { margin: 0 0 1rem; font-size: clamp(2.15rem, 5.9vw, 4rem); font-weight: 800; letter-spacing: -.04em; }
+h2 { margin: 0 0 .7rem; font-size: clamp(1.65rem, 3.5vw, 2.45rem); }
+h3 { color: var(--deep); margin: 1.55rem 0 .45rem; font-size: 1.15rem; }
+p { margin: .65rem 0; }
+.lead { font-size: 1.12rem; line-height: 1.65; max-width: 38em; }
+article { padding: 2.7rem 0; border-bottom: 1px solid var(--rule); scroll-margin-top: 1rem; }
+article .lede { color: var(--muted); font-size: 1.04rem; margin-bottom: 1.15rem; }
+ol, ul { padding-inline-start: 1.55rem; }
+li + li { margin-top: .36rem; }
+code, pre { font-family: var(--mono); }
+code { padding: .1em .24em; background: var(--wash); border-radius: 3px; overflow-wrap: anywhere; font-size: .93em; }
+pre { margin: 1rem 0; padding: 1rem; border-radius: 6px; background: #172a25; color: #edf6ef; white-space: pre-wrap; overflow-wrap: anywhere; line-height: 1.58; font-size: .83rem; tab-size: 4; }
+pre code { padding: 0; background: transparent; font-size: inherit; }
+figure { margin: 1.35rem 0; }
+blockquote { margin: .9rem 0; padding: .7rem 1rem; border-inline-start: 3px solid #2b7460; background: var(--wash); }
+figcaption, .small { font-size: .89rem; color: var(--muted); }
+.flow { display: flex; flex-wrap: wrap; align-items: center; gap: .45rem; padding: 0; list-style: none; margin: 1.3rem 0; }
+.flow li { margin: 0; display: flex; align-items: center; gap: .45rem; }
+.flow li + li::before { content: "→"; color: var(--green); font-weight: 740; }
+.flow span { display: block; background: var(--wash); border: 1px solid var(--rule); padding: .22rem .56rem; border-radius: 4px; font-size: .91rem; }
+.lab { background: var(--white); border: 1px solid var(--rule); border-top: 3px solid var(--green); border-radius: 5px; margin: 1.55rem 0; padding: 1.05rem 1.2rem; }
+.lab h3 { margin: 0 0 .1rem; }
+.lab p { margin: .55rem 0; }
+.lab fieldset { border: 0; padding: 0; margin: .75rem 0 .45rem; min-inline-size: 0; }
+.lab legend, .control > label { font-size: .93rem; font-weight: 720; }
+.controls { display: flex; flex-wrap: wrap; gap: .4rem 1rem; margin: .6rem 0; }
+.controls label { display: flex; align-items: center; gap: .32rem; min-height: 2.35rem; font-size: .94rem; }
+input[type="radio"], input[type="checkbox"], input[type="range"] { accent-color: var(--green); }
+input[type="range"] { display: block; width: min(100%, 24rem); margin: .4rem 0; min-height: 2rem; }
+select, button { font: inherit; }
+select { display: block; max-width: 100%; padding: .45rem 1.6rem .45rem .52rem; margin: .35rem 0 .6rem; color: var(--ink); border: 1px solid #81978a; border-radius: 4px; background: var(--white); }
+output { font-weight: 720; color: var(--green); }
+.result { padding: .6rem .8rem; background: var(--wash); border-radius: 4px; margin: .65rem 0 0; }
+.result ol { margin: .4rem 0; }
+.tag { font-size: .85rem; color: var(--warm); font-weight: 720; }
+.table-wrap { overflow-x: auto; margin: 1rem 0; }
+table { border-collapse: collapse; width: 100%; font-size: .94rem; }
+caption { text-align: left; font-weight: 700; color: var(--deep); padding-bottom: .4rem; }
+th, td { border-bottom: 1px solid var(--rule); padding: .5rem .55rem; text-align: left; vertical-align: top; }
+thead th { background: var(--wash); color: var(--deep); }
+.sources { border-left: 2px solid var(--rule); padding: .15rem 0 .15rem .8rem; margin-top: 1.2rem; font-size: .91rem; }
+details { margin: .8rem 0; }
+summary { cursor: pointer; color: var(--green); font-weight: 690; }
+.exercise { background: var(--sand); padding: .75rem 1rem; border-radius: 4px; margin: 1rem 0; }
+.exercise h3 { margin-top: 0; }
+.footer { padding-top: 1.2rem; color: var(--muted); }
+@media (max-width: 740px) {
+  .masthead .wrap { padding: .65rem 1rem; }
+  .shell { display: block; padding: 1.1rem 1rem 3rem; }
+  aside { position: static; margin: 0 0 1.65rem; }
+  aside nav ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: .7rem; }
+  aside nav a { font-size: .87rem; }
+  .hero { padding-bottom: 1.5rem; }
+  article { padding: 2rem 0; }
+  .lab { padding: .85rem; }
+  th, td { padding: .45rem .35rem; }
+}
+@media print {
+  aside, .skip, .lab fieldset, .lab select, .lab input { display: none; }
+  .shell { display: block; padding: 1rem; }
+  article { break-inside: avoid-page; }
+  .masthead { background: white; color: black; }
+  .masthead a { color: black; }
+}
+</style>
+</head>
+<body id="top">
+<a class="skip" href="#main">跳到正文</a>
+<header class="masthead"><div class="wrap"><span class="brand">InkRAG 学习手册</span><a href="../../README.md">项目入口</a></div></header>
+<div class="shell">
+  <aside aria-label="课程目录">
+    <strong>课程目录</strong>
+    <nav aria-label="章节">
+      <ul>
+        <li><a href="#evidence">目标与证据</a></li>
+        <li><a href="#parsing">解析与分块</a></li>
+        <li><a href="#keyword">中文关键词检索</a></li>
+        <li><a href="#vector">向量、融合与评测</a></li>
+        <li><a href="#local">动手跑本地 SDK</a></li>
+        <li><a href="#platform">平台任务与发布</a></li>
+        <li><a href="#build">跟 AI 搭自己的系统</a></li>
+      </ul>
+    </nav>
+  </aside>
+  <main id="main" tabindex="-1">
+    <header class="hero">
+      <p class="context">从售后手册到带出处的答案</p>
+      <h1>从零搭一个可查证的 RAG</h1>
+      <p class="lead">售后同事问「AB-123 温度传感器报警怎么处理」。系统要找对型号，给出步骤，并让同事打开手册核对。用这一个案例学会解释 InkRAG 的数据流，再在自己的资料上做一条可验证的闭环。</p>
+      <ol class="flow" aria-label="处理顺序"><li><span>原件</span></li><li><span>结构化解析</span></li><li><span>可检索片段</span></li><li><span>证据召回</span></li><li><span>带出处的回答</span></li></ol>
+      <p class="small">页内实验可离线操作，均使用教学材料。真正运行项目时，按每章说明准备 Python 或平台依赖。</p>
+    </header>
+
+    <article id="evidence">
+      <h2>目标与证据</h2>
+      <p class="lede">先约定一条正确答案需要什么证据。RAG 是检索增强生成，也就是先从指定资料找证据，再把证据交给模型组织回答。</p>
+      <figure>
+        <blockquote><strong>AB-123 售后手册 · 第 2 页</strong><br>温度传感器报警时，先断开电源，再检查接头。更换控制板后，重新校准温度传感器。</blockquote>
+        <blockquote><strong>AB-1234 售后手册 · 第 3 页</strong><br>温度传感器报警时，检查散热风道。清洁滤网后，执行自检。</blockquote>
+        <figcaption>两条合成原文。型号只差一个数字，步骤不同，可用来检查误匹配。</figcaption>
+      </figure>
+      <p>首版约定三种可观察结果。<strong>命中</strong>时返回正确型号的原文和出处。<strong>证据不足</strong>时明确表示查无可用证据，例如从未入库的 <code>AB-1239</code>。<strong>执行失败</strong>时返回可定位的错误，例如向量服务超时。空命中、依赖失败和权限拒绝应有不同的状态。</p>
+      <p>先把「问句 → 证据」跑通，再加入回答生成。比如首版搜到的原文是「先断开电源」，结果里要能检查文件名、页码或元素定位。模型的回答只是基于原文整理出的文字，检索命中的片段和固定版本才是可回查的证据。</p>
+      <p class="sources">源码与契约 <a href="../workspace-http-contract.md">对象与发布契约</a> · <a href="../release-readiness.md">产品验收</a></p>
+    </article>
+
+    <article id="parsing">
+      <h2>解析与分块</h2>
+      <p class="lede">同一句说明可能来自 PDF 段落、Word 表格或扫描图片。先把内容和出处一起读出来，再决定哪些内容应放进同一个片段。</p>
+      <ol>
+        <li><strong>保留原件。</strong>平台把原始字节放到资产存储，用摘要标识内容。后续纠错产生新的解析版本，审阅时仍能核对原件。</li>
+        <li><strong>解析为结构。</strong><code>inkparse.Parser</code> 接收 <code>ParseRequest</code>，输出带 <code>result_id</code> 的 <code>ParseResult</code>，包含结构元素、来源和诊断。纯文本有可用的内置读取器，文本 PDF 可提取文本层。扫描图片需要适合的 OCR 能力。Docling 属于可选解析器，运行环境与工件见解析手册。</li>
+        <li><strong>准备证据片段。</strong>核心按元素和章节取有效正文，保留表格转写和出处，再调用切分器。平台使用模型对应的 tokenizer 计算 token 预算。分块预览和正式构建复用片段准备，用户能在入库前看到检索粒度。</li>
+      </ol>
+
+      <section class="lab" aria-labelledby="chunk-title">
+        <h3 id="chunk-title">实验 · 改变分块边界</h3>
+        <p class="small">演示按句合并。项目实际使用模型 token 预算和 <code>SentenceSplitter</code>，此处用句数突出边界影响。</p>
+        <div class="control">
+          <label for="chunk-size">每个片段最多几句</label> <output id="chunk-value" for="chunk-size">2 句</output>
+          <input id="chunk-size" type="range" min="1" max="4" value="2">
+        </div>
+        <div class="controls"><label><input id="chunk-overlap" type="checkbox">重叠一句</label></div>
+        <div class="result" id="chunk-result" aria-live="polite">两句一组且无重叠时，断电和检查接头分在不同片段。</div>
+      </section>
+      <p>片段太短时，故障条件可能和处理步骤分开。片段太长时，一个候选会混入多个主题。重叠能保留跨边界上下文，也会增加重复命中和向量计算量。先拿同一组问题比较分块，再确认引用能定位到正确元素。页码只在原格式提供时使用，Markdown 或 TXT 的来源可通过原件和元素引用回查。</p>
+      <p class="sources">源码与说明 <a href="../../packages/inkparse/src/inkparse/parser.py">解析入口</a> · <a href="../parsing-core.md">解析配置</a> · <a href="../../src/inkrag/documents.py">节点准备与切分</a> · <a href="../../packages/inkrag-platform/src/inkrag_platform/processing.py">分块预览</a></p>
+    </article>
+
+    <article id="keyword">
+      <h2>中文关键词检索</h2>
+      <p class="lede">关键词一路先确定哪些片段匹配，再把候选排序。分词决定拿什么匹配，BM25 负责给已经匹配的片段打分。</p>
+      <p><strong>BM25</strong>通常给稀有词更高的权重，也会考虑词在片段里出现的次数和片段长度。比如库里每一篇都写「处理」，只有少数写「温度传感器」，后者更能区分资料。重复出现会增加贡献，增加幅度会逐渐减小。</p>
+      <p>InkRAG 默认保留已有规则。平台 <code>legacy</code> 用 OpenSearch <code>standard</code>，本地 <code>legacy</code> 用单字与相邻双字。启用 <code>jieba-v1</code> 时，同一个 Python 分词模块切出正文词项，平台用 <code>whitespace</code> 接收词项，本地用 SQLite FTS5。原文继续用于展示、引用和向量化。带字母和数字的编号独立规范化保存，支持大小写和全角归一化。</p>
+
+      <section class="lab" aria-labelledby="keyword-title">
+        <h3 id="keyword-title">实验 · 看型号如何匹配</h3>
+        <p class="small">以下是三段合成材料的匹配演示。预先写入词项，排序按命中项数展示，真实 BM25 的语料统计与打分见对照证据。</p>
+        <div class="control">
+          <label for="keyword-query">查询内容</label>
+          <select id="keyword-query">
+            <option value="code">AB-123</option>
+            <option value="mixed">AB-123 温度传感器</option>
+            <option value="unknown">AB-1239</option>
+          </select>
+        </div>
+        <fieldset>
+          <legend>使用哪种规则</legend>
+          <div class="controls">
+            <label><input type="radio" name="lexical" value="standard" checked>通用切词</label>
+            <label><input type="radio" name="lexical" value="jieba">Jieba 与独立编号</label>
+          </div>
+        </fieldset>
+        <div class="result" id="keyword-result" aria-live="polite">通用切词可能同时匹配相近编号。</div>
+      </section>
+
+      <p><code>jieba-v1</code> 的关键词或混合模式遇到纯编号，走精确查询。遇到「AB-123 怎么处理」这样的混合问句，关键词一路给精确编号加分，向量一路仍用原问题。此时别的型号仍可能因正文相似进入候选。若产品要求严格型号范围，应明确设计并验收范围过滤。</p>
+      <p>已做过一组真实 OpenSearch 3.3.2 对照。13 道公开中文问题的前五证据组覆盖，旧规则 <strong>12/13</strong>，Jieba <strong>11/13</strong>。独立的 7 道合成编号与权限用例，旧规则 <strong>5/7</strong>，Jieba 加编号 <strong>7/7</strong>。因此默认保留旧规则，允许在候选索引上显式试用。此证据覆盖关键词路和小样延迟。</p>
+      <p class="sources">源码与证据 <a href="../../src/inkrag/lexical_jieba.py">Jieba 与编号实现</a> · <a href="../../src/inkrag/sqlite_keyword.py">本地全文索引</a> · <a href="../../src/inkrag/opensearch_keyword.py">平台关键词适配</a> · <a href="../evidence/jieba-retrieval.json">逐题结果</a></p>
+    </article>
+
+    <article id="vector">
+      <h2>向量、融合与评测</h2>
+      <p class="lede">用户说「测温探头告警要怎么处理」时，手册可能只写「温度传感器报警」。向量路补这类措辞差异。</p>
+      <p>入库时把每个原文片段送进嵌入模型，得到一组数字。查询时用匹配的模型把原问题变成向量，再找距离近的片段。索引需绑定模型身份和维度。OpenSearch 当前用 Lucene HNSW 近似向量索引与余弦相似度，本地 SDK 使用 LlamaIndex 向量索引。即使向量返回了语义相近的段落，具体型号和授权范围仍要由查询规则约束。</p>
+      <p><strong>RRF</strong> 是按排名融合。某个片段在一路第 <em>r</em> 名，贡献 <code>1 / (k + r)</code>，另一条路也命中就再加一份。平台配置的常数 <code>k</code> 是 60。下面模拟前两名的合并，便于观察一个片段怎样因为两路都命中而前移。</p>
+      <section class="lab" aria-labelledby="rrf-title">
+        <h3 id="rrf-title">实验 · 调换向量候选的顺序</h3>
+        <p>关键词排名固定为 A、B。A 是精确型号，B 是处理段落，C 是只有向量路找回的通用说明。</p>
+        <div class="control">
+          <label for="vector-order">向量排名</label>
+          <select id="vector-order">
+            <option value="b,c">B → C</option>
+            <option value="c,a">C → A</option>
+            <option value="a,b">A → B</option>
+          </select>
+        </div>
+        <div class="control">
+          <label for="rrf-k">演示中的排名常数</label> <output id="rrf-value" for="rrf-k">60</output>
+          <input id="rrf-k" type="range" min="1" max="100" value="60">
+        </div>
+        <div class="result" id="rrf-result" aria-live="polite">B 在两路都有名次，因此排在前面。</div>
+      </section>
+      <h3>先评召回，再评回答</h3>
+      <p>给每个问题标出必须看到的证据组。比如「断电之后做什么」需要处理步骤，而「什么时候要校准」需要控制板更换这一条件。前五证据组覆盖能判断有没有把依据找回来，首个相关证据的排名能判断用户要翻几条。另测未知型号、旧版误引、撤销资料和请求失败。模型生成的答案再核对断言和引用是否对应。候选数量、分词和融合参数每次只改一个，保留逐题的命中与退步。</p>
+      <p class="sources">源码与说明 <a href="../../src/inkrag/retrieval.py">共享检索规则</a> · <a href="../../src/inkrag/search.py">平台查询</a> · <a href="../dual-retrieval-guide.md">双路检索实操</a> · <a href="../search-backend.md">过滤、诊断与验收</a></p>
+    </article>
+
+    <article id="local">
+      <h2>动手跑本地 SDK</h2>
+      <p class="lede">在项目根目录运行。需要 Python 3.12、uv 和 SQLite FTS5。首次准备 Python 依赖可能联网，下面的练习本身无需模型密钥、OpenSearch 或平台账号。</p>
+      <p>练习使用 <code>MockEmbedding</code> 让入库写入确定的向量。真实执行的是解析、分块、FTS5 检索、保存和重开。语义质量需要换成真实嵌入模型另验。</p>
+      <pre aria-label="从临时目录运行本地检索的命令"><code>uv run --locked --package inkrag --no-dev python - &lt;&lt;'PY'
+from pathlib import Path
+from tempfile import TemporaryDirectory
+
+from inkrag import RAG
+from llama_index.core.embeddings import MockEmbedding
+
+model = MockEmbedding(model_name="learn-demo", embed_dim=4)
+
+with TemporaryDirectory(prefix="inkrag-learn-") as tmp:
+    root = Path(tmp)
+    manual = root / "manual.txt"
+    manual.write_text(
+        "AB-123 温度传感器报警时，先断开电源，再检查接头。",
+        encoding="utf-8",
+    )
+    with RAG.open(
+        root / "knowledge", embedding=model, lexical_profile="jieba-v1"
+    ) as rag:
+        receipt = rag.ingest(manual, document_id="manual")
+        print("片段数", receipt.node_count, "快照", receipt.snapshot_id)
+
+    # 重开后查询会读取快照的词项规则。
+    with RAG.open(root / "knowledge", embedding=model) as rag:
+        result = rag.retrieve("ab-123", mode="keyword")
+        assert result.snapshot_id == receipt.snapshot_id
+        assert result.hits and "断开电源" in result.hits[0].get_content()
+        assert not rag.retrieve("AB-1239", mode="keyword").hits
+        print(result.hits[0].get_content())
+        print(result.hits[0].metadata)
+PY</code></pre>
+      <p>运行后检查命中的原文和 <code>parse_origin</code>。它将片段指回解析结果及原件元素。可以再加入 <code>AB-1234</code> 的手册，先预测 <code>AB-123</code> 能返回哪些片段，然后用断言验证。临时目录会在命令退出时清理。</p>
+      <details>
+        <summary>换真实模型时怎么运行</summary>
+        <p>仓库的快速入门使用 <code>SiliconFlowEmbedding()</code>，由调用者提供 <code>SILICONFLOW_API_KEY</code>。模型会接收片段和查询，先用合成或获准资料。保留知识目录后，可省略文件参数再查，观察向量和混合结果。密钥从环境读取，练习文件与诊断记录里都无需写入。</p>
+        <pre><code>uv run --locked --package inkrag --no-dev python examples/quickstart.py \
+  --storage ./learn-knowledge assets/samples/sensor.md</code></pre>
+      </details>
+      <p class="sources">源码与说明 <a href="../../src/inkrag/rag.py">SDK 入口</a> · <a href="../../src/inkrag/ingestion.py">入库与快照</a> · <a href="../python-sdk.md">参数手册</a> · <a href="../../examples/quickstart.py">真实模型示例</a></p>
+    </article>
+
+    <article id="platform">
+      <h2>平台任务与发布</h2>
+      <p class="lede">多人使用时，上传可能排队、模型可能失败，客服仍需查询上一版。这一章关注谁能改状态，以及查询怎样始终读到一个确定版本。</p>
+      <ol>
+        <li><strong>提交。</strong>HTTP 从已验证的身份获得租户和角色，校验资料归属。原件写入资产存储，资料、任务及待投递事件一起记录在 PostgreSQL。<code>202</code> 表示请求已受理。</li>
+        <li><strong>处理。</strong>Relay 将待投递事件送给 RabbitMQ，Worker 按任务租约处理。解析产出固定版本，后续构建按输入清单切分和生成向量。索引是派生数据，原件、解析版本和发布记录是追溯依据。</li>
+        <li><strong>试查与生效。</strong>Worker 在独立 OpenSearch 候选写索引，等待写屏障、刷新并核对清单。候选可试查，正式发布由 PostgreSQL 条件更新指针。自动生效和手动发布都要核对候选及当前状态。</li>
+        <li><strong>查询与引用。</strong>查询开始时固定一个发布和索引版本，应用可信范围和当前撤销条件。结果记录 <code>trace_id</code> 供定位。引用对应资料、解析版本、元素和可用页码。回滚会切换到可用的旧版本，已经撤销的资料仍受当前限制。</li>
+      </ol>
+
+      <section class="lab" aria-labelledby="release-title">
+        <h3 id="release-title">实验 · 同一问题读哪一版</h3>
+        <p class="small">状态演示。V1 写「检查接头」，V2 补了「记录故障灯状态」。尝试构建失败、发布和回滚。</p>
+        <div class="control">
+          <label for="release-state">当前平台状态</label>
+          <select id="release-state">
+            <option value="building">V2 构建中，V1 在用</option>
+            <option value="ready">V2 可试查，V1 在用</option>
+            <option value="failed">V2 构建失败，V1 在用</option>
+            <option value="published">V2 已发布</option>
+            <option value="rollback">已回滚到 V1</option>
+          </select>
+        </div>
+        <div class="controls"><label><input id="release-revoked" type="checkbox">撤销这份资料</label></div>
+        <div class="result" id="release-result" aria-live="polite">线上读 V1，构建中的候选暂不可试查。</div>
+      </section>
+
+      <p>网页走 HTTP，Python 查询同一个已发布库可走 <code>RAG.open_published()</code>，两条入口复用平台查询逻辑。Worker 和本地 SDK 共用片段准备，采用 <code>jieba-v1</code> 时共用切词与编号规则。本地 SQLite 和平台 OpenSearch 各自执行索引、存储和排名。查同一平台发布可以对比两入口的命中顺序，本地库与平台库要按同一验收案例比较行为。</p>
+      <h3>回答如何引用证据</h3>
+      <p>平台启用回答模型时，<code>/api/v2/knowledge-bases/{kb_id}/answers</code> 先走同一条检索链路，再把命中原文切成可引用的小段。模型给出的每条陈述附来源和段落编号，服务核对编号存在并回填同次检索的原句。没有可用证据时返回 <code>insufficient</code>。生成后还会核对权限与当前发布，避免查询途中撤销的数据从答案泄露。</p>
+      <p>例如，模型若用第 2 页的「先断开电源」作出处，却写成「先检查接头再断电」，引用位置存在，回答顺序仍有错。验收时应同时检查陈述和引文是否一致。 <a href="../../packages/inkrag-platform/src/inkrag_platform/answers.py">回答与引用校验源码</a></p>
+      <details>
+        <summary>在本机平台上练习一次</summary>
+        <p>从项目根目录执行 <code>uv run --locked --package inkrag-platform --extra rag inkrag up</code>，第一次需要镜像和模型。使用测试知识库上传两份合成手册，打开分块预览，核对处理后的片段，再查看任务。练习候选与线上差异时，可在知识库关闭自动生效，再执行候选试查、发布和回滚。已有业务库在用时，按运行手册准备隔离的开发环境。账号资料按运行手册在私有状态目录中查看。</p>
+        <p>观察点包括资料所处阶段、候选与当前发布、筛选后的命中和原文引用。遇到任务失败，先查任务或查询追踪。用恢复后的新构建验证旧发布继续可查，重试前核对原件、解析版本和任务状态。</p>
+      </details>
+      <p class="sources">源码与说明 <a href="../../packages/inkrag-platform/src/inkrag_platform/worker.py">后台解析与构建</a> · <a href="../../packages/inkrag-platform/src/inkrag_platform/repository.py">租约与发布事务</a> · <a href="../../packages/inkrag-platform/src/inkrag_platform/workspace_query.py">发布查询</a> · <a href="../../packages/inkrag-platform/src/inkrag_platform/sdk.py">平台 Python 连接</a> · <a href="../production-runbook.md">运行手册</a></p>
+    </article>
+
+    <article id="build">
+      <h2>跟 AI 搭自己的系统</h2>
+      <p class="lede">从两份可以公开的手册和三个有标准答案的问题起步。先建立可运行、可读懂、可重开的闭环，再按验收结果扩大范围。</p>
+      <ol>
+        <li><strong>你定目标。</strong>写出谁来用、最常查什么、什么错误代价高。明确资料和权限边界，给一条应该命中的问题与一条必须为空的反例。</li>
+        <li><strong>让 AI 走第一条线。</strong>要求它先读现有入口，说明原件、片段、索引和引用各在哪里。先实现一类文件和一个查询入口，用输出原文及出处验证闭环。</li>
+        <li><strong>按证据改一处。</strong>编号串错先看词项和匹配条件，专业词漏掉先查分词，步骤缺失先查原文和分块。保持其他配置一致再对照。</li>
+        <li><strong>把接手方法留在项目里。</strong>要求说明安装、配置、运行入口、失败和恢复方法。让每次改动都能从一个业务例子追到源码位置，再追到测试证据。</li>
+      </ol>
+      <section class="exercise" aria-labelledby="prompt-title">
+        <h3 id="prompt-title">给 AI 的练习任务</h3>
+        <p>我有两份同系列售后手册，型号只差一位。先用 Python 搭一个可保存和重开的检索程序。成功时返回原文与出处，未知型号返回空。请先画一条输入到输出的流程，指出每步负责的代码。用两条正确问题、一条未知型号、一条错误输入检查结果。完成后告诉我改了什么、怎么复跑，以及哪些效果还没验证。</p>
+      </section>
+      <div class="table-wrap" role="region" aria-label="验收清单" tabindex="0">
+        <table>
+          <caption>每一步怎样算过关</caption>
+          <thead><tr><th scope="col">验收项</th><th scope="col">看什么证据</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">出处</th><td>命中可以打开原件或回到正确解析元素。手动核对至少一个数字、型号或步骤。</td></tr>
+            <tr><th scope="row">正常与反例</th><td>正确型号、近似型号、未知型号、无权限资料和依赖错误各有清晰结果。</td></tr>
+            <tr><th scope="row">效果</th><td>在固定的问题上保存前五排名和原文。分别记录新增命中与退步。</td></tr>
+            <tr><th scope="row">恢复</th><td>本地关闭后重开。平台候选失败后旧发布可查，回滚后撤销仍生效。</td></tr>
+            <tr><th scope="row">可接手</th><td>换一个例子，你能指到应该改的模块，并说明复测要包含哪条反例。</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <h3>开发者要懂到什么程度</h3>
+      <p>能独立画出一条请求从输入、持久化到输出的路径，说清楚哪份数据是事实，哪份索引能重建。能在一个错误例子里分辨解析、切分、候选召回、排序、权限或模型故障，并指出下一次要看哪条证据。能判断一次改动会影响哪些调用方和旧数据，能解释发布失败时为什么旧版本仍可用。</p>
+      <p>这些判断必须由开发者掌握，因为谁能读资料、错误要付什么代价、什么结果可以发布，都取决于人的业务责任。AI 可以写适配器、生成测试夹具、找反例和跑回归。开发者定义成功条件，挑选有代表性的反例，检查实际输出和证据，再决定是否合并或上线。</p>
+      <p>这条学习闭环验收的是指定样例上的功能和理解。扩到团队使用时，再拿真实业务资料、实际调用方、并发和恢复演练检验容量与运行质量。</p>
+      <p class="sources">继续阅读 <a href="../platform-implementation.md">平台实现与时序</a> · <a href="../release-readiness.md">生产准备与证据</a> · <a href="../deployment.md">开发与验收计划</a></p>
+    </article>
+    <footer class="footer"><a href="#top">返回顶部</a></footer>
+  </main>
+</div>
+<noscript><p>正文仍可阅读。开启 JavaScript 后可操作页内实验。</p></noscript>
+<script>
+// 用原生控件和纯本地数据演示检索行为，所有输出以 textContent 写入。
+const byId = (id) => document.getElementById(id);
+
+function resultList(target, intro, items) {
+  const message = document.createElement("p");
+  message.textContent = intro;
+  target.replaceChildren(message);
+  if (items.length === 0) return;
+  const list = document.createElement("ol");
+  for (const item of items) {
+    const row = document.createElement("li");
+    row.textContent = item;
+    list.append(row);
+  }
+  target.append(list);
+}
+
+// 固定同一原文位置，观察片段大小和相邻重叠如何影响证据完整性。
+function updateChunks() {
+  const sentences = [
+    "AB-123 温度传感器报警。",
+    "先断开电源。",
+    "再检查接头是否松动。",
+    "更换控制板后重新校准。",
+  ];
+  const size = Number(byId("chunk-size").value);
+  const overlap = byId("chunk-overlap").checked && size > 1 ? 1 : 0;
+  const stride = size - overlap;
+  byId("chunk-value").textContent = size + " 句";
+  const segments = [];
+  for (let start = 0; start < sentences.length; start += stride) {
+    segments.push(sentences.slice(start, start + size));
+    if (start + size >= sentences.length) break;
+  }
+  const together = segments.some((segment) => segment.includes(sentences[1]) && segment.includes(sentences[2]));
+  const summary = together ? "至少一块同时含有断电与检查接头两个动作。" : "断电与检查接头分在不同块，需要检索到两块。";
+  const overlapNote = byId("chunk-overlap").checked && size === 1 ? " 单句片段无法重叠整句。" : "";
+  resultList(byId("chunk-result"), segments.length + " 个片段。" + summary + overlapNote,
+    segments.map((segment) => segment.join("") + "（手册第 2 页）"));
+}
+
+// 预写两种词表和编号字段，直观展示 OR 候选与精确查询的差别。
+function updateKeyword() {
+  const docs = [
+    { id: "AB-123", standard: ["ab", "123", "温", "度", "传", "感", "器"], jieba: ["温度", "传感器"] },
+    { id: "AB-1234", standard: ["ab", "1234", "温", "度", "传", "感", "器"], jieba: ["温度", "传感器"] },
+    { id: "ZX-123", standard: ["zx", "123", "温", "度", "探", "头"], jieba: ["温度", "探头"] },
+  ];
+  const query = byId("keyword-query").value;
+  const mode = document.querySelector('input[name="lexical"]:checked').value;
+  const id = query === "unknown" ? "AB-1239" : "AB-123";
+  const standard = ["ab", id.split("-")[1], ...(query === "mixed" ? ["温", "度", "传", "感", "器"] : [])];
+  const jieba = query === "mixed" ? ["温度", "传感器"] : [];
+  const ranked = docs.map((doc) => {
+    const exact = doc.id === id;
+    const words = (mode === "standard" ? standard : jieba).filter((term) => doc[mode].includes(term));
+    const score = words.length + (mode === "jieba" && exact ? 8 : 0);
+    return { id: doc.id, words, exact, score };
+  }).filter((doc) => doc.score > 0).sort((left, right) => right.score - left.score);
+  const label = mode === "standard" ? "匹配任一词项 " + standard.join(" / ")
+    : "编号 " + id + (jieba.length ? "，正文词项 " + jieba.join(" / ") : "，只查完整值");
+  resultList(byId("keyword-result"), label + "。" + (ranked.length ? "命中 " + ranked.length + " 条。" : "无匹配证据。"),
+    ranked.map((doc) => doc.id + " · " + [
+      ...(mode === "jieba" && doc.exact ? ["完整编号"] : []),
+      ...doc.words,
+    ].join("、")));
+}
+
+// 两路名次是实验输入，逐项累加贡献并显示最终顺序。
+function updateRrf() {
+  const k = Number(byId("rrf-k").value);
+  byId("rrf-value").textContent = String(k);
+  const keyword = ["a", "b"];
+  const vector = byId("vector-order").value.split(",");
+  const candidates = [...new Set([...keyword, ...vector])].map((id) => {
+    const wordRank = keyword.indexOf(id) + 1;
+    const vectorRank = vector.indexOf(id) + 1;
+    const score = (wordRank ? 1 / (k + wordRank) : 0) + (vectorRank ? 1 / (k + vectorRank) : 0);
+    return { id, wordRank, vectorRank, score };
+  }).sort((left, right) => right.score - left.score || left.id.localeCompare(right.id));
+  resultList(byId("rrf-result"), "按两路贡献之和排序。零贡献表示该路没有召回。",
+    candidates.map((row) => row.id.toUpperCase() + " · 关键词 "
+      + (row.wordRank || "缺席") + "，向量 " + (row.vectorRank || "缺席") + " · " + row.score.toFixed(5)));
+}
+
+// 发布指针和资料撤销是两类状态，演示同一版本也要应用当前访问条件。
+function updateRelease() {
+  const state = byId("release-state").value;
+  const revoked = byId("release-revoked").checked;
+  const live = state === "published" ? "V2" : "V1";
+  const trial = state === "ready" ? "V2 可以试查" : {
+    building: "V2 写入尚未确认",
+    failed: "V2 失败，保留故障记录",
+    published: "V2 已成为当前发布",
+    rollback: "当前发布指针指向可用的 V1 内容",
+  }[state];
+  const hits = revoked ? "没有可返回的证据。"
+    : live === "V2" ? "线上证据包含「记录故障灯状态」。" : "线上证据包含「检查接头」。";
+  resultList(byId("release-result"), "线上读取 " + live + "。" + hits,
+    [trial + "。", revoked ? "候选试查也应用当前撤销条件。" : "当前资料允许在授权范围内返回。"]);
+}
+
+byId("chunk-size").addEventListener("input", updateChunks);
+byId("chunk-overlap").addEventListener("change", updateChunks);
+byId("keyword-query").addEventListener("change", updateKeyword);
+document.querySelectorAll('input[name="lexical"]').forEach((input) => input.addEventListener("change", updateKeyword));
+byId("vector-order").addEventListener("change", updateRrf);
+byId("rrf-k").addEventListener("input", updateRrf);
+byId("release-state").addEventListener("change", updateRelease);
+byId("release-revoked").addEventListener("change", updateRelease);
+for (const update of [updateChunks, updateKeyword, updateRrf, updateRelease]) update();
+
+const chapterLinks = [...document.querySelectorAll("aside nav a")];
+function showCurrentChapter() {
+  for (const link of chapterLinks) {
+    if (link.hash === window.location.hash) link.setAttribute("aria-current", "location");
+    else link.removeAttribute("aria-current");
+  }
+}
+window.addEventListener("hashchange", showCurrentChapter);
+showCurrentChapter();
+</script>
+</body>
+</html>
