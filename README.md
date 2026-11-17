@@ -2,7 +2,7 @@
 
 把手册、制度和业务文档变成能回查原文的检索证据。查「E102 故障怎么处理」时，调用方可以核对原文步骤、页码和资料版本。
 
-[Core 使用指南](docs/core-guide.md) · [交互学习手册](docs/learn/index.html) · [文档索引](docs/index.md) · [GitHub 发行版](https://github.com/chenyk2016/inkrag/releases) · [English](README.en.md)
+[项目使用手册](docs/core-guide.md) · [GitHub 发行版](https://github.com/chenyk2016/inkrag/releases) · [English](README.en.md)
 
 ## 选择入口
 
@@ -28,7 +28,7 @@ cd inkrag
 uv run --locked --no-dev --package inkrag-core python examples/core_retrieval.py
 ```
 
-这个示例用合成资料和确定性向量，在本地执行入库、检索并输出证据及来源。使用自己的嵌入服务或数据库时见 [Core 使用指南](docs/core-guide.md)。
+这个示例用合成资料和确定性向量，在本地执行入库、检索并输出证据及来源。使用自己的嵌入服务或数据库时见[项目使用手册](docs/core-guide.md)。
 
 <a name="1-无密钥试跑"></a>
 
@@ -98,8 +98,7 @@ Core 可选择 SQLite 或 PostgreSQL + pgvector。工作台的现有架构使用
 
 | 我想做什么 | 入口 |
 | --- | --- |
-| 理解数据流、读源码、跟 AI 搭建自己的版本 | [当前源码的交互手册](docs/learn/index.html)（克隆后用浏览器打开） · [公开发行的在线教程](https://chenyk2016.github.io/inkrag/) |
-| 选择 Core 组件并验证 | [配置、使用与验收](docs/core-guide.md) |
+| 安装、配置 Core、接入自己的资料并验收 | [项目使用手册](docs/core-guide.md) |
 | 延用 Python 或 HTTP 集成 | [Python SDK 参数](docs/python-sdk.md) · [HTTP v2](docs/platform-http.md) · [三种检索示例](docs/dual-retrieval-guide.md) |
 | 确认支持的格式和索引规则 | [解析契约](docs/parsing-core.md) · [检索实现与分词扩展](docs/search-backend.md) |
 | 自行部署及排查故障 | [生产部署方案](docs/deployment.md) · [运行配置](docs/production-runbook.md) |
