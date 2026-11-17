@@ -21,7 +21,36 @@ jobs:
       - run: sh scripts/check.sh
       - run: uv build --all-packages --wheel
       - run: uv run --locked --no-dev python examples/offline_quickstart.py
+      - name: Install and exercise the core wheel alone
+        run: |
+          uv venv --python 3.12 "$RUNNER_TEMP/inkrag-core"
+          uv pip install --no-deps --python "$RUNNER_TEMP/inkrag-core/bin/python" dist/inkrag_core-*.whl
+          "$RUNNER_TEMP/inkrag-core/bin/python" -I examples/core_retrieval.py
       - run: python3 scripts/export-public-source.py --output dist/inkrag-source.tar
+  core-integration:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    services:
+      postgres:
+        image: pgvector/pgvector:0.8.7-pg17-bookworm
+        env:
+          POSTGRES_DB: inkrag_core_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: inkrag-fixture
+        ports: [5432:5432]
+        options: >-
+          --health-cmd "pg_isready -U postgres -d inkrag_core_test"
+          --health-interval 5s --health-timeout 3s --health-retries 12
+    steps:
+      - uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@v10.3.3
+      - run: uv python install 3.12
+      - run: uv sync --locked --all-packages --all-extras
+      - run: uv run --locked --all-packages --all-extras pytest tests/test_core_indexes.py
+        env:
+          INKRAG_CORE_TEST_POSTGRES_DSN: postgresql://postgres:inkrag-fixture@127.0.0.1:5432/inkrag_core_test
   search-integration:
     runs-on: ubuntu-latest
     timeout-minutes: 25

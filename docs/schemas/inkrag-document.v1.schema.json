@@ -1,0 +1,26 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "InkRAG portable document evidence",
+  "type": "object",
+  "required": ["schema", "name", "parts"],
+  "additionalProperties": false,
+  "properties": {
+    "schema": {"const": "inkrag.document.v1"},
+    "name": {"type": "string", "minLength": 1, "pattern": "^[^/\\\\]+$"},
+    "result_id": {"type": ["string", "null"], "minLength": 1, "maxLength": 255},
+    "sha256": {"type": ["string", "null"], "pattern": "^[a-f0-9]{64}$"},
+    "parts": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["text", "element_ref"],
+        "additionalProperties": false,
+        "properties": {
+          "text": {"type": "string", "minLength": 1},
+          "element_ref": {"type": "string", "minLength": 1},
+          "page": {"type": ["integer", "null"], "minimum": 1, "maximum": 2147483647}
+        }
+      }
+    }
+  }
+}

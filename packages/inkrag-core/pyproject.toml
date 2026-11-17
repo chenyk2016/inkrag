@@ -1,0 +1,27 @@
+[project]
+name = "inkrag-core"
+version = "0.1.0a1"
+description = "Framework-independent document evidence, indexing, and retrieval"
+readme = "README.md"
+license = "Apache-2.0"
+license-files = ["LICENSE", "NOTICE"]
+requires-python = ">=3.12,<3.13"
+dependencies = []
+
+[project.urls]
+Source = "https://github.com/chenyk2016/inkrag"
+Documentation = "https://github.com/chenyk2016/inkrag/blob/main/docs/core-guide.md"
+Tutorial = "https://chenyk2016.github.io/inkrag/"
+
+[project.optional-dependencies]
+jieba = ["jieba==0.42.1"]
+parse = ["inkparse==0.4.0a1"]
+docling = ["inkparse[docling]==0.4.0a1"]
+postgres = ["psycopg[binary]>=3.2,<4"]
+
+[build-system]
+requires = ["hatchling>=1.27,<2"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/inkrag_core"]
