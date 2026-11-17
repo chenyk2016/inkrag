@@ -8,13 +8,13 @@ cd inkrag
 uv run --locked --no-dev --package inkrag-core python examples/core_retrieval.py
 ```
 
-[Core API and deployment guide (Chinese)](docs/core-guide.md) · [Interactive maintainer guide (Chinese)](https://chenyk2016.github.io/inkrag/)
+[Project usage manual (Chinese)](docs/core-guide.md)
 
 ## SDK and workspace compatibility
 
 InkRAG turns manuals, policies, and other documents into searchable evidence that can be checked against the original. Build a local knowledge base with the Python SDK, or use the self-hosted workspace to review and publish versions for other applications to query.
 
-[中文 README](README.md) · [Documentation](docs/index.md) · [Interactive tutorial (Chinese)](https://chenyk2016.github.io/inkrag/) · [Releases](https://github.com/chenyk2016/inkrag/releases)
+[中文 README](README.md) · [Documentation index](docs/index.md) · [Releases](https://github.com/chenyk2016/inkrag/releases)
 
 ## Quickstart
 

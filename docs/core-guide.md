@@ -1,4 +1,4 @@
-# InkRAG Core 使用指南
+# InkRAG 项目使用手册
 
 把售后手册、政策和 PDF 的内容检索出来，并让调用方回查原文。一个典型查询是「AB-123 温度传感器报警怎么处理」。业务系统需要看到对应型号的操作步骤、资料版本与可用的页码或元素定位。
 
@@ -11,13 +11,13 @@
 | 延用既有 Python 集成 | [`inkrag.RAG` SDK](python-sdk.md)。原有知识目录继续通过原入口读取。 |
 | 多人审校并将知识发布给业务应用 | [工作台](../README.md#工作台)及 [HTTP API](platform-http.md)，沿用工作台自己的权限、任务与发布链路。 |
 
-[离线交互手册](learn/index.html)沿着一个手册用例讲解各阶段，并展示如何读代码、改一处策略和验证失败恢复。
-
 ## 快速开始
 
-在仓库根目录使用 Python 3.12 和 uv 运行。
+准备 Python 3.12 和 uv，克隆仓库后运行示例。
 
 ```sh
+git clone https://github.com/chenyk2016/inkrag.git
+cd inkrag
 uv run --locked --no-dev --package inkrag-core python examples/core_retrieval.py
 ```
 
@@ -227,3 +227,9 @@ uv run --locked --all-packages --all-extras pytest tests/test_core_indexes.py
 - 将工作目录、资料、解析包和关系清单放在可恢复的位置。用独立测试库验证中断后能重开，失败更新不会呈现半份资料，成功替换后旧片段退出查询。并发更新同一资料时，应用负责新旧事件顺序；数据库保证整份替换事务的一致性。
 - 从既有 `inkrag.RAG` 或工作台迁移时，以原件或支持的解析 JSON 在新库重新入库，再比较引用、召回、更新与删除的行为。保留旧目录和服务，待新链路验证后切换调用方。
 - 正式环境另测生产数据分布、权限、并发、恢复与模型依赖。对 PostgreSQL 演练资产和数据库的协调恢复，回读实际命中与引用。
+
+## 进一步学习
+
+跑通示例后，可以沿同一份维修手册读源码，动手调整分块、检索和图路径，再检查改动从哪一步开始改变结果。[打开交互式学习手册](https://chenyk2016.github.io/inkrag/)
+
+离线阅读时，克隆仓库并在浏览器打开 [`docs/learn/index.html`](learn/index.html)。

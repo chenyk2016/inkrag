@@ -4,10 +4,8 @@
 
 | 路径 | 说明 |
 | --- | --- |
-| [InkRAG Core 使用指南](core-guide.md) | Python 接入、解析和检索配置、存储选型、诊断、恢复与验收 |
-| [从售后手册开始学习](learn/index.html) | 克隆后离线打开，跟踪原件、来源、召回、融合与分步查询，沿代码实践一个改动 |
+| [项目使用手册](core-guide.md) | Python 接入、解析和检索配置、存储选型、诊断、恢复与验收 |
 | [独立解析](parsing-core.md) · [资产](asset-storage.md) | 解析接口、引擎能力、原件与派生资源 |
-| [公开发行的在线教程](https://chenyk2016.github.io/inkrag/) | 浏览器直接打开，内容随公开版本发布 |
 
 ## 既有 SDK 与工作台
 
