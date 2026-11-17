@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
-<title>从零搭一个可查证的 RAG · InkRAG 教程</title>
+<title>从原件到检索证据 · InkRAG 学习手册</title>
 <style>
 :root {
   --paper: #f8f7f2; --white: #fffefa; --ink: #202a26; --muted: #52625b;
@@ -23,16 +23,16 @@ a:hover { text-decoration-thickness: .14em; }
 .masthead { background: var(--deep); color: #f8fff9; }
 .masthead .wrap { max-width: 1180px; margin: 0 auto; padding: .95rem 2rem; display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
 .masthead a { color: #e4f4ea; }
+.masthead nav { display: flex; flex-wrap: wrap; gap: .15rem .95rem; }
 .brand { font-weight: 760; font-size: 1.12rem; letter-spacing: .035em; }
 .shell { display: grid; grid-template-columns: 202px minmax(0, 800px); gap: clamp(2rem, 5vw, 5rem); max-width: 1180px; margin: 0 auto; padding: 2.7rem 2rem 5rem; }
-aside { align-self: start; position: sticky; top: 2rem; }
+aside { align-self: start; position: sticky; top: 2rem; max-height: calc(100vh - 4rem); overflow-y: auto; }
 aside strong { font-size: .95rem; }
 aside nav ul { padding: 0; margin: .65rem 0 0; list-style: none; border-top: 1px solid var(--rule); }
 aside nav a { display: block; padding: .53rem .35rem; border-bottom: 1px solid var(--rule); text-decoration: none; color: var(--ink); font-size: .91rem; }
 aside nav a:hover, aside nav a[aria-current="location"] { color: var(--green); background: var(--wash); }
 main { min-width: 0; }
 .hero { border-bottom: 2px solid var(--deep); padding: 0 0 2.2rem; }
-.context { margin: 0 0 .6rem; color: var(--green); font-size: .92rem; font-weight: 720; }
 h1, h2 { font-family: "Source Han Serif SC", "Songti SC", SimSun, Georgia, serif; color: var(--deep); line-height: 1.25; }
 h1 { margin: 0 0 1rem; font-size: clamp(2.15rem, 5.9vw, 4rem); font-weight: 800; letter-spacing: -.04em; }
 h2 { margin: 0 0 .7rem; font-size: clamp(1.65rem, 3.5vw, 2.45rem); }
@@ -54,6 +54,17 @@ figcaption, .small { font-size: .89rem; color: var(--muted); }
 .flow li { margin: 0; display: flex; align-items: center; gap: .45rem; }
 .flow li + li::before { content: "→"; color: var(--green); font-weight: 740; }
 .flow span { display: block; background: var(--wash); border: 1px solid var(--rule); padding: .22rem .56rem; border-radius: 4px; font-size: .91rem; }
+.pipeline { border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+.pipeline-row { display: grid; grid-template-columns: 6.75rem minmax(0, 1fr); align-items: start; padding: .7rem .9rem; gap: .6rem; }
+.pipeline-row + .pipeline-row { border-top: 1px solid var(--rule); }
+.pipeline-row strong { font-size: .88rem; padding-top: .24rem; color: var(--green); }
+.pipeline-row .flow { margin: 0; }
+.pipeline figcaption { padding: .7rem .9rem; color: #e4f4ea; background: var(--deep); }
+.callout { padding: .85rem 1rem; border-left: 3px solid var(--warm); background: var(--sand); }
+.callout p:first-child { margin-top: 0; }
+.callout p:last-child { margin-bottom: 0; }
+.example { margin: 1rem 0; padding: .85rem 1rem; background: var(--white); border: 1px solid var(--rule); border-radius: 5px; }
+.example summary { margin-bottom: .1rem; }
 .lab { background: var(--white); border: 1px solid var(--rule); border-top: 3px solid var(--green); border-radius: 5px; margin: 1.55rem 0; padding: 1.05rem 1.2rem; }
 .lab h3 { margin: 0 0 .1rem; }
 .lab p { margin: .55rem 0; }
@@ -68,11 +79,11 @@ select { display: block; max-width: 100%; padding: .45rem 1.6rem .45rem .52rem; 
 output { font-weight: 720; color: var(--green); }
 .result { padding: .6rem .8rem; background: var(--wash); border-radius: 4px; margin: .65rem 0 0; }
 .result ol { margin: .4rem 0; }
-.tag { font-size: .85rem; color: var(--warm); font-weight: 720; }
 .table-wrap { overflow-x: auto; margin: 1rem 0; }
 table { border-collapse: collapse; width: 100%; font-size: .94rem; }
 caption { text-align: left; font-weight: 700; color: var(--deep); padding-bottom: .4rem; }
 th, td { border-bottom: 1px solid var(--rule); padding: .5rem .55rem; text-align: left; vertical-align: top; }
+th[scope="row"], thead th:first-child { min-width: 4.8rem; }
 thead th { background: var(--wash); color: var(--deep); }
 .sources { border-left: 2px solid var(--rule); padding: .15rem 0 .15rem .8rem; margin-top: 1.2rem; font-size: .91rem; }
 details { margin: .8rem 0; }
@@ -83,13 +94,17 @@ summary { cursor: pointer; color: var(--green); font-weight: 690; }
 @media (max-width: 740px) {
   .masthead .wrap { padding: .65rem 1rem; }
   .shell { display: block; padding: 1.1rem 1rem 3rem; }
-  aside { position: static; margin: 0 0 1.65rem; }
+  aside { position: static; max-height: none; margin: 0 0 1.65rem; }
   aside nav ul { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: .7rem; }
   aside nav a { font-size: .87rem; }
   .hero { padding-bottom: 1.5rem; }
   article { padding: 2rem 0; }
   .lab { padding: .85rem; }
   th, td { padding: .45rem .35rem; }
+}
+@media (max-width: 440px) {
+  .pipeline-row { display: block; }
+  .pipeline-row strong { display: block; margin-bottom: .3rem; }
 }
 @media print {
   aside, .skip, .lab fieldset, .lab select, .lab input { display: none; }
@@ -102,29 +117,31 @@ summary { cursor: pointer; color: var(--green); font-weight: 690; }
 </head>
 <body id="top">
 <a class="skip" href="#main">跳到正文</a>
-<header class="masthead"><div class="wrap"><span class="brand">InkRAG 学习手册</span><a href="../../README.md">项目入口</a></div></header>
+<header class="masthead"><div class="wrap"><span class="brand">InkRAG 学习手册</span><nav aria-label="项目文档"><a href="../core-guide.md">使用指南</a><a href="../../README.md">项目入口</a></nav></div></header>
 <div class="shell">
   <aside aria-label="课程目录">
     <strong>课程目录</strong>
     <nav aria-label="章节">
       <ul>
         <li><a href="#evidence">目标与证据</a></li>
+        <li><a href="#architecture">架构与状态</a></li>
         <li><a href="#parsing">解析与分块</a></li>
         <li><a href="#keyword">中文关键词检索</a></li>
         <li><a href="#vector">向量、融合与评测</a></li>
-        <li><a href="#local">动手跑本地 SDK</a></li>
-        <li><a href="#platform">平台任务与发布</a></li>
+        <li><a href="#multi-hop">图与分步检索</a></li>
+        <li><a href="#local">运行与验证</a></li>
+        <li><a href="#debug">沿诊断排查</a></li>
+        <li><a href="#platform">既有工作台与发布</a></li>
         <li><a href="#build">跟 AI 搭自己的系统</a></li>
       </ul>
     </nav>
   </aside>
   <main id="main" tabindex="-1">
     <header class="hero">
-      <p class="context">从售后手册到带出处的答案</p>
-      <h1>从零搭一个可查证的 RAG</h1>
-      <p class="lead">售后同事问「AB-123 温度传感器报警怎么处理」。系统要找对型号，给出步骤，并让同事打开手册核对。用这一个案例学会解释 InkRAG 的数据流，再在自己的资料上做一条可验证的闭环。</p>
-      <ol class="flow" aria-label="处理顺序"><li><span>原件</span></li><li><span>结构化解析</span></li><li><span>可检索片段</span></li><li><span>证据召回</span></li><li><span>带出处的回答</span></li></ol>
-      <p class="small">页内实验可离线操作，均使用教学材料。真正运行项目时，按每章说明准备 Python 或平台依赖。</p>
+      <h1>从原件到检索证据</h1>
+      <p class="lead">售后同事问「AB-123 温度传感器报警怎么处理」。系统需要找对型号和步骤，并让同事打开手册核对。沿着这个查询了解 InkRAG Core，从原件、解析和入库走到检索策略、来源和故障诊断。</p>
+      <ol class="flow" aria-label="学习顺序"><li><span>核对原文</span></li><li><span>选择检索策略</span></li><li><span>修改一条规则</span></li><li><span>验收效果和恢复</span></li></ol>
+      <p class="small">页内实验使用合成材料，可以离线操作。各章分别标明实际代码、运行入口和应检查的结果。</p>
     </header>
 
     <article id="evidence">
@@ -137,21 +154,64 @@ summary { cursor: pointer; color: var(--green); font-weight: 690; }
       </figure>
       <p>首版约定三种可观察结果。<strong>命中</strong>时返回正确型号的原文和出处。<strong>证据不足</strong>时明确表示查无可用证据，例如从未入库的 <code>AB-1239</code>。<strong>执行失败</strong>时返回可定位的错误，例如向量服务超时。空命中、依赖失败和权限拒绝应有不同的状态。</p>
       <p>先把「问句 → 证据」跑通，再加入回答生成。比如首版搜到的原文是「先断开电源」，结果里要能检查文件名、页码或元素定位。模型的回答只是基于原文整理出的文字，检索命中的片段和固定版本才是可回查的证据。</p>
-      <p class="sources">源码与契约 <a href="../workspace-http-contract.md">对象与发布契约</a> · <a href="../release-readiness.md">产品验收</a></p>
+      <p class="sources"><a href="../core-guide.md#用四类问题验收">四类问题的证据与验收反例</a></p>
+    </article>
+
+    <article id="architecture">
+      <h2>架构与状态</h2>
+      <p class="lede">入库把一份手册变成可查询的片段。查询把一句话变成有出处的证据。理解这两条线以后，再换其中的解析器、分词器、嵌入模型或数据库。</p>
+      <figure class="pipeline">
+        <div class="pipeline-row">
+          <strong>入库写入</strong>
+          <ol class="flow" aria-label="入库顺序"><li><span>原件／解析 JSON</span></li><li><span>正文与位置</span></li><li><span>原文片段</span></li><li><span>词项与向量</span></li><li><span>提交存储</span></li></ol>
+        </div>
+        <div class="pipeline-row">
+          <strong>查询返回</strong>
+          <ol class="flow" aria-label="查询顺序"><li><span>问题与范围</span></li><li><span>策略与候选</span></li><li><span>融合与排序</span></li><li><span>证据及诊断</span></li></ol>
+        </div>
+        <figcaption>两条线都通过选择的数据库读写。业务应用向 Core 传入组装好的组件；组件通过进程内调用协作，远程数据库和模型调用由相应适配器负责。</figcaption>
+      </figure>
+      <div class="table-wrap" role="region" aria-label="Core 模块与数据" tabindex="0">
+        <table>
+          <caption>跟着一份手册走</caption>
+          <thead><tr><th scope="col">责任</th><th scope="col">输入和输出</th><th scope="col">谁持有状态</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">解析和分块</th><td>从原件或交换 JSON 得到正文、表格内容、页码或元素引用，按配置准备片段。</td><td>原件和解析产物由调用方保管。</td></tr>
+            <tr><th scope="row">分析和嵌入</th><td>分词器把文字变成词项和规范化编号。嵌入模型把文字变成指定维度的向量。</td><td>索引绑定词项规则和模型身份。片段原文仍用于展示与引用。</td></tr>
+            <tr><th scope="row">存储与召回</th><td>写入片段、词项与向量。各检索通道在给定范围内读取候选。</td><td>SQLite 持有本地数据；共享数据库使用 PostgreSQL 和 pgvector。</td></tr>
+            <tr><th scope="row">策略和融合</th><td>根据问题执行一次查询或有限步骤，合并排名并返回证据与阶段诊断。</td><td>查询预算和来源范围由调用方设置，证据沿片段引用回到原件。</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="sources"><a href="../core-guide.md#入库和查询">配置、调用与存储方案</a></p>
     </article>
 
     <article id="parsing">
       <h2>解析与分块</h2>
       <p class="lede">同一句说明可能来自 PDF 段落、Word 表格或扫描图片。先把内容和出处一起读出来，再决定哪些内容应放进同一个片段。</p>
       <ol>
-        <li><strong>保留原件。</strong>平台把原始字节放到资产存储，用摘要标识内容。后续纠错产生新的解析版本，审阅时仍能核对原件。</li>
+        <li><strong>保留原件。</strong>把原件保存到可回查的位置。修订时用新解析版本保存变更，审阅时仍能核对同一原件和旧版本。</li>
         <li><strong>解析为结构。</strong><code>inkparse.Parser</code> 接收 <code>ParseRequest</code>，输出带 <code>result_id</code> 的 <code>ParseResult</code>，包含结构元素、来源和诊断。纯文本有可用的内置读取器，文本 PDF 可提取文本层。扫描图片需要适合的 OCR 能力。Docling 属于可选解析器，运行环境与工件见解析手册。</li>
-        <li><strong>准备证据片段。</strong>核心按元素和章节取有效正文，保留表格转写和出处，再调用切分器。平台使用模型对应的 tokenizer 计算 token 预算。分块预览和正式构建复用片段准备，用户能在入库前看到检索粒度。</li>
+        <li><strong>准备证据片段。</strong>切分时让每段保留能回到原文的定位。对表格，优先保证值与列名或必要上下文能一起查到。选择分块单位时阅读对应切分器的文档，长度、重叠和模型输入预算都受单位影响。</li>
       </ol>
+      <details class="example">
+        <summary>读代码 · 从 JSON 到可回查的片段</summary>
+        <pre aria-label="解析结果、入库与来源的读取"><code>from inkrag_core import ParsedDocument
+
+# Core 的交换 JSON 保存每段原文、元素定位以及已有页码。
+parsed = ParsedDocument.from_json(path.read_bytes())
+
+# 保持同一个资料 ID，整个资料的片段随此次写入一起替换。
+chunks = engine.ingest("manual-ab-123", parsed)
+for chunk in chunks:
+    print(chunk.source.name, chunk.source.page, chunk.source.element_ref)</code></pre>
+        <p><code>document.py</code> 先验证 JSON，再按 <code>Part</code> 切成片段。默认切分按字符计量，<code>CharacterChunker(600, 80)</code> 表示片段最长 600 个字符，相邻片段可重叠 80 个字符。嵌入模型以 token 限制输入时，要结合实际 tokenizer 调整长度或注入自己的切分器。</p>
+        <p>用 <code>InkparseAdapter().load(path)</code> 接已有 InkParse 结果，保留其结果身份和原件摘要。页面和元素引用是回查线索。应用需要保有相应原件或解析包，才能让链接实际打开。</p>
+      </details>
 
       <section class="lab" aria-labelledby="chunk-title">
         <h3 id="chunk-title">实验 · 改变分块边界</h3>
-        <p class="small">演示按句合并。项目实际使用模型 token 预算和 <code>SentenceSplitter</code>，此处用句数突出边界影响。</p>
+        <p class="small">实验按句合并，突出边界对一条证据的影响。</p>
         <div class="control">
           <label for="chunk-size">每个片段最多几句</label> <output id="chunk-value" for="chunk-size">2 句</output>
           <input id="chunk-size" type="range" min="1" max="4" value="2">
@@ -160,14 +220,14 @@ summary { cursor: pointer; color: var(--green); font-weight: 690; }
         <div class="result" id="chunk-result" aria-live="polite">两句一组且无重叠时，断电和检查接头分在不同片段。</div>
       </section>
       <p>片段太短时，故障条件可能和处理步骤分开。片段太长时，一个候选会混入多个主题。重叠能保留跨边界上下文，也会增加重复命中和向量计算量。先拿同一组问题比较分块，再确认引用能定位到正确元素。页码只在原格式提供时使用，Markdown 或 TXT 的来源可通过原件和元素引用回查。</p>
-      <p class="sources">源码与说明 <a href="../../packages/inkparse/src/inkparse/parser.py">解析入口</a> · <a href="../parsing-core.md">解析配置</a> · <a href="../../src/inkrag/documents.py">节点准备与切分</a> · <a href="../../packages/inkrag-platform/src/inkrag_platform/processing.py">分块预览</a></p>
+      <p class="sources"><a href="../../packages/inkrag-core/src/inkrag_core/document.py">Core 证据协议与切分</a> · <a href="../../packages/inkrag-core/src/inkrag_core/inkparse_adapter.py">InkParse 适配</a> · <a href="../parsing-core.md">解析配置</a> · <a href="../../packages/inkrag-platform/src/inkrag_platform/processing.py">工作台分块预览</a></p>
     </article>
 
     <article id="keyword">
       <h2>中文关键词检索</h2>
       <p class="lede">关键词一路先确定哪些片段匹配，再把候选排序。分词决定拿什么匹配，BM25 负责给已经匹配的片段打分。</p>
       <p><strong>BM25</strong>通常给稀有词更高的权重，也会考虑词在片段里出现的次数和片段长度。比如库里每一篇都写「处理」，只有少数写「温度传感器」，后者更能区分资料。重复出现会增加贡献，增加幅度会逐渐减小。</p>
-      <p>InkRAG 默认保留已有规则。平台 <code>legacy</code> 用 OpenSearch <code>standard</code>，本地 <code>legacy</code> 用单字与相邻双字。启用 <code>jieba-v1</code> 时，同一个 Python 分词模块切出正文词项，平台用 <code>whitespace</code> 接收词项，本地用 SQLite FTS5。原文继续用于展示、引用和向量化。带字母和数字的编号独立规范化保存，支持大小写和全角归一化。</p>
+      <p>编号适合独立保存。把 <code>AB-123</code> 切成「AB」和「123」时，另一个相似型号可能也匹配。只查型号时使用完整规范化值做精确判定；带型号的自然语言问题还需要保留正文关键词和原句语义。Core 的索引侧和查询侧使用配对的规则，换分词器时先重建受影响的索引。</p>
 
       <section class="lab" aria-labelledby="keyword-title">
         <h3 id="keyword-title">实验 · 看型号如何匹配</h3>
@@ -190,16 +250,20 @@ summary { cursor: pointer; color: var(--green); font-weight: 690; }
         <div class="result" id="keyword-result" aria-live="polite">通用切词可能同时匹配相近编号。</div>
       </section>
 
-      <p><code>jieba-v1</code> 的关键词或混合模式遇到纯编号，走精确查询。遇到「AB-123 怎么处理」这样的混合问句，关键词一路给精确编号加分，向量一路仍用原问题。此时别的型号仍可能因正文相似进入候选。若产品要求严格型号范围，应明确设计并验收范围过滤。</p>
-      <p>已做过一组真实 OpenSearch 3.3.2 对照。13 道公开中文问题的前五证据组覆盖，旧规则 <strong>12/13</strong>，Jieba <strong>11/13</strong>。独立的 7 道合成编号与权限用例，旧规则 <strong>5/7</strong>，Jieba 加编号 <strong>7/7</strong>。因此默认保留旧规则，允许在候选索引上显式试用。此证据覆盖关键词路和小样延迟。</p>
-      <p class="sources">源码与证据 <a href="../../src/inkrag/lexical_jieba.py">Jieba 与编号实现</a> · <a href="../../src/inkrag/sqlite_keyword.py">本地全文索引</a> · <a href="../../src/inkrag/opensearch_keyword.py">平台关键词适配</a> · <a href="../evidence/jieba-retrieval.json">逐题结果</a></p>
+      <p>用 <code>routes=("keyword",)</code> 查完整型号，词项在索引中按完整值匹配。「AB-123 怎么处理」仍是完整问句，混合检索可召回语义相近的其他型号。产品要求只看 AB-123 时，向检索传入相应资料范围，并用两个号码只差一位、描述词完全相同的手册验证。</p>
+      <p class="sources"><a href="../../packages/inkrag-core/src/inkrag_core/analyzers.py">双字、Jieba 与型号词项</a> · <a href="../../packages/inkrag-core/src/inkrag_core/sqlite.py">SQLite 倒排与 BM25</a> · <a href="../../packages/inkrag-core/src/inkrag_core/postgres.py">PostgreSQL 倒排与 BM25</a></p>
+      <details class="example">
+        <summary>既有工作台怎样比较分词</summary>
+        <p>工作台此前用 OpenSearch 3.3.2 做对照。13 道公开中文题的前五证据组覆盖，旧规则 12/13，Jieba 11/13。另有 7 道合成编号和权限反例，旧规则 5/7，Jieba 加编号 7/7。原工作台维持旧规则默认并保留显式选项。迁移到 Core 时重新建立本项目语料的基线。</p>
+        <p><a href="../evidence/jieba-retrieval.json">旧工作台逐题记录</a> · <a href="../search-backend.md">旧工作台检索适配</a></p>
+      </details>
     </article>
 
     <article id="vector">
       <h2>向量、融合与评测</h2>
       <p class="lede">用户说「测温探头告警要怎么处理」时，手册可能只写「温度传感器报警」。向量路补这类措辞差异。</p>
-      <p>入库时把每个原文片段送进嵌入模型，得到一组数字。查询时用匹配的模型把原问题变成向量，再找距离近的片段。索引需绑定模型身份和维度。OpenSearch 当前用 Lucene HNSW 近似向量索引与余弦相似度，本地 SDK 使用 LlamaIndex 向量索引。即使向量返回了语义相近的段落，具体型号和授权范围仍要由查询规则约束。</p>
-      <p><strong>RRF</strong> 是按排名融合。某个片段在一路第 <em>r</em> 名，贡献 <code>1 / (k + r)</code>，另一条路也命中就再加一份。平台配置的常数 <code>k</code> 是 60。下面模拟前两名的合并，便于观察一个片段怎样因为两路都命中而前移。</p>
+      <p>入库时把每个原文片段送进嵌入模型，得到一组数字。查询时用同一模型把原问题变成向量，再找距离近的片段。即使两个模型维度一样，向量坐标的含义也可能不同。索引绑定模型身份和维度，换模型需要重新索引。具体型号和授权范围仍由查询约束。</p>
+      <p><strong>RRF</strong> 按排名融合。某个片段在一路第 <em>r</em> 名，贡献 <code>1 / (k + r)</code>，另一条路也命中就再加一份。下面从 <code>k=60</code> 起算，观察一个片段怎样因为两路都命中而前移。</p>
       <section class="lab" aria-labelledby="rrf-title">
         <h3 id="rrf-title">实验 · 调换向量候选的顺序</h3>
         <p>关键词排名固定为 A、B。A 是精确型号，B 是处理段落，C 是只有向量路找回的通用说明。</p>
@@ -219,13 +283,52 @@ summary { cursor: pointer; color: var(--green); font-weight: 690; }
       </section>
       <h3>先评召回，再评回答</h3>
       <p>给每个问题标出必须看到的证据组。比如「断电之后做什么」需要处理步骤，而「什么时候要校准」需要控制板更换这一条件。前五证据组覆盖能判断有没有把依据找回来，首个相关证据的排名能判断用户要翻几条。另测未知型号、旧版误引、撤销资料和请求失败。模型生成的答案再核对断言和引用是否对应。候选数量、分词和融合参数每次只改一个，保留逐题的命中与退步。</p>
-      <p class="sources">源码与说明 <a href="../../src/inkrag/retrieval.py">共享检索规则</a> · <a href="../../src/inkrag/search.py">平台查询</a> · <a href="../dual-retrieval-guide.md">双路检索实操</a> · <a href="../search-backend.md">过滤、诊断与验收</a></p>
+      <p class="sources"><a href="../../packages/inkrag-core/src/inkrag_core/embedding.py">HTTP 嵌入适配源码</a> · <a href="../../packages/inkrag-core/src/inkrag_core/engine.py">检索编排和 RRF</a> · <a href="https://doi.org/10.1145/1571941.1572114">RRF 论文</a> · <a href="../dual-retrieval-guide.md">既有 SDK 的双路检索实操</a></p>
+    </article>
+
+    <article id="multi-hop">
+      <h2>图与分步检索</h2>
+      <p class="lede">「北区 AB-123 的延保找哪个团队」需要三份证据。先找到适用型号，从政策找到受理站，最后从服务名录找到团队。</p>
+      <figure>
+        <ol class="flow" aria-label="合成关系路径"><li><span>北区 AB-123</span></li><li><span>延保政策 P-7</span></li><li><span>受理站 R-2</span></li><li><span>区域技术组</span></li></ol>
+        <figcaption>每一步都需要可回查的原文。中间的边界条件和最终团队同样重要。</figcaption>
+      </figure>
+      <div class="table-wrap" role="region" aria-label="图与分步策略比较" tabindex="0">
+        <table>
+          <caption>什么时候引入多个步骤</caption>
+          <thead><tr><th scope="col">策略</th><th scope="col">适合的输入</th><th scope="col">要检查的停止原因</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">图检索</th><td>已登记的实体和关系都有原文片段。给出起点，沿关系展开。</td><td>路径缺证据、证据超出范围、访问深度或边数用尽。</td></tr>
+            <tr><th scope="row">问题分解</th><td>各子问题预先可知，例如分别查适用地区和退货期限。</td><td>子问题重复、步骤已执行完或达预算。空结果也需要检查。</td></tr>
+            <tr><th scope="row">迭代检索</th><td>下一问依赖前一步，如确认受理站以后再查团队。</td><td>回调决定结束、问题重复或触发预算。何时证据已经足够由调用方判断。</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <section class="lab" aria-labelledby="graph-title">
+        <h3 id="graph-title">实验 · 一条关系何时可用</h3>
+        <p class="small">教学路径从 AB-123 开始。用深度和范围查看能取得哪些原文，只对这条路径计证据。</p>
+        <div class="control">
+          <label for="path-depth">最多走几条边</label> <output id="depth-value" for="path-depth">2 条</output>
+          <input id="path-depth" type="range" min="1" max="3" value="2">
+        </div>
+        <div class="controls"><label><input id="policy-visible" type="checkbox" checked>允许查询延保政策 P-7</label></div>
+        <div class="result" id="path-result" aria-live="polite">两条边可以到达受理站。第三条边才能找到团队。</div>
+      </section>
+      <p>先将每条边记录成「起点、关系、终点、片段身份」。再给遍历设深度与候选预算。受范围限制的边不能作为跳板，否则终点即使有权可见，也可能泄露中间的关系。知识变更后检查旧片段身份是否还有效。</p>
+      <p>Core 的图路径适合已明确登记的局部关系。对照组先用相同原件做一次混合检索，比较是否真的补回了成组证据。要做跨全库的全局主题总结，需另行评估关系抽取、聚类摘要和引用验证。</p>
+      <p class="sources"><a href="../../packages/inkrag-core/src/inkrag_core/graph.py">关系路径源码</a> · <a href="../../packages/inkrag-core/src/inkrag_core/multihop.py">分解与迭代源码</a> · <a href="../core-guide.md#图和分步配置">接入配置</a> · <a href="https://arxiv.org/abs/2212.10509">迭代检索研究 IRCoT</a> · <a href="https://arxiv.org/abs/2404.16130">基于图的全局摘要研究 GraphRAG</a></p>
     </article>
 
     <article id="local">
-      <h2>动手跑本地 SDK</h2>
-      <p class="lede">在项目根目录运行。需要 Python 3.12、uv 和 SQLite FTS5。首次准备 Python 依赖可能联网，下面的练习本身无需模型密钥、OpenSearch 或平台账号。</p>
-      <p>练习使用 <code>MockEmbedding</code> 让入库写入确定的向量。真实执行的是解析、分块、FTS5 检索、保存和重开。语义质量需要换成真实嵌入模型另验。</p>
+      <h2>运行与验证</h2>
+      <p class="lede">用项目中的合成资料跑出一条真实索引，再把显示的片段与原文对照。初次准备 Python 依赖可能联网。</p>
+      <h3>独立 Core</h3>
+      <pre aria-label="运行 Core 练习"><code>uv run --locked --no-dev --package inkrag-core python examples/core_retrieval.py</code></pre>
+      <p>检查 E102 的第 4 页原文，以及图和分步路径找回的第 82 页安全步骤。示例用固定规则生成演示向量，以便复查调用和证据。验证语义质量时换成自己的嵌入模型，使用真实资料和同义问法。</p>
+      <p class="sources"><a href="../../examples/core_retrieval.py">打开可运行示例</a> · <a href="../core-guide.md">Core 接入及数据库配置</a></p>
+      <details class="example">
+      <summary>既有 SDK 的本地练习与真实模型</summary>
+      <p>既有 <code>inkrag.RAG</code> 示例使用 <code>MockEmbedding</code>。真实执行的是解析、分块、FTS5 检索、保存和重开。</p>
       <pre aria-label="从临时目录运行本地检索的命令"><code>uv run --locked --package inkrag --no-dev python - &lt;&lt;'PY'
 from pathlib import Path
 from tempfile import TemporaryDirectory
@@ -264,11 +367,41 @@ PY</code></pre>
         <pre><code>uv run --locked --package inkrag --no-dev python examples/quickstart.py \
   --storage ./learn-knowledge assets/samples/sensor.md</code></pre>
       </details>
-      <p class="sources">源码与说明 <a href="../../src/inkrag/rag.py">SDK 入口</a> · <a href="../../src/inkrag/ingestion.py">入库与快照</a> · <a href="../python-sdk.md">参数手册</a> · <a href="../../examples/quickstart.py">真实模型示例</a></p>
+      <p class="sources"><a href="../../src/inkrag/rag.py">既有 SDK 入口</a> · <a href="../../src/inkrag/ingestion.py">入库与快照</a> · <a href="../python-sdk.md">参数手册</a> · <a href="../../examples/quickstart.py">真实模型示例</a></p>
+      </details>
+    </article>
+
+    <article id="debug">
+      <h2>沿诊断排查</h2>
+      <p class="lede">客户说「测温探头报错，怎么恢复？」检索只给了另一个型号。先找失效阶段，再改具体规则。</p>
+      <div class="table-wrap" role="region" aria-label="检索失败排查" tabindex="0">
+        <table>
+          <caption>从事实到候选再到排序</caption>
+          <thead><tr><th scope="col">先观察什么</th><th scope="col">下一步</th><th scope="col">验收反例</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">解析包有没有该句</th><td>在原页对照，检查所选引擎、警告、阅读顺序和表格结构。</td><td>删掉该页正文或输入损坏包，区分解析失败和可搜索正文为空。</td></tr>
+            <tr><th scope="row">正确片段有没有写入</th><td>核对资料身份、版本、片段原文和来源。步骤拆散时改切分策略。</td><td>更新同一资料后，旧步骤不再被当前检索返回。</td></tr>
+            <tr><th scope="row">哪一路取得候选</th><td>看编号是否完整，词项是否匹配，向量模型与索引是否一致。</td><td>用相邻型号、同义问法、错误模型和越界的资料范围复测。</td></tr>
+            <tr><th scope="row">融合前有，融合后没有</th><td>保存通道名次、候选深度和最终 Top K。先确认是否要调整范围或候选预算。</td><td>真实漏召回有改善，同时已正确的证据不掉出前 K。</td></tr>
+            <tr><th scope="row">请求中断或写入失败</th><td>区分失败阶段及提交结果。回读已有资料，查实际版本，再决定是否重试。</td><td>注入嵌入或数据库失败，旧资料仍可查；关闭重开后继续正确查询。</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="callout"><p>依据诊断复测时固定原件、模型、筛选范围和最终 Top K。把问题、应该命中的证据组和禁止出现的证据一起记录，方便后续比较。</p></div>
+      <details class="example">
+        <summary>读代码 · 从查询入口进入策略和事务</summary>
+        <ol>
+          <li>在 <code>engine.py</code> 找 <code>Engine.retrieve()</code>，查看输入校验、路由和范围。<code>Index.read()</code> 在一次查询中固定快照，防止词项、向量和图读到不同批次。</li>
+          <li>定位 <code>SearchResult.steps</code>。找到关键词已召回却在最终结果缺席的片段，核对候选名次、融合与最终 Top K。没有候选时返回分词或原文排查。</li>
+          <li>切换到 <code>Engine.ingest()</code>。批量准备和校验词项与向量以后才调用 <code>Index.replace()</code>，存储事务负责同资料的整体替换。模拟第二个嵌入批次失败，观察上一个版本仍可查。</li>
+          <li>如果要换分词器，只改组装时注入的分析器，为新规则使用新的标识和集合。同一问集在两个集合复跑，逐条对照证据。</li>
+        </ol>
+      </details>
+      <p class="sources"><a href="../core-guide.md#更改和恢复">索引变更与恢复</a></p>
     </article>
 
     <article id="platform">
-      <h2>平台任务与发布</h2>
+      <h2>既有工作台与发布</h2>
       <p class="lede">多人使用时，上传可能排队、模型可能失败，客服仍需查询上一版。这一章关注谁能改状态，以及查询怎样始终读到一个确定版本。</p>
       <ol>
         <li><strong>提交。</strong>HTTP 从已验证的身份获得租户和角色，校验资料归属。原件写入资产存储，资料、任务及待投递事件一起记录在 PostgreSQL。<code>202</code> 表示请求已受理。</li>
@@ -317,8 +450,16 @@ PY</code></pre>
       </ol>
       <section class="exercise" aria-labelledby="prompt-title">
         <h3 id="prompt-title">给 AI 的练习任务</h3>
-        <p>我有两份同系列售后手册，型号只差一位。先用 Python 搭一个可保存和重开的检索程序。成功时返回原文与出处，未知型号返回空。请先画一条输入到输出的流程，指出每步负责的代码。用两条正确问题、一条未知型号、一条错误输入检查结果。完成后告诉我改了什么、怎么复跑，以及哪些效果还没验证。</p>
+        <p>我有 AB-123、AB-1234 两份不同手册。使用 InkRAG Core 和 SQLite 做一条可重开的检索链路，输出片段和原文位置。先读公开入口，用一张图画出解析、分块、词项、向量和查询经过的数据。先跑基线，再只修改一条分词或切分规则。用正确型号、近似型号、未知型号和一次故障比较改变前后的前五证据与出处，留下可复现命令。</p>
       </section>
+      <details class="example">
+        <summary>下一轮练习 · 用两条证据回答一个复合问题</summary>
+        <ol>
+          <li>先写下「是否可以延保」和「找谁受理」分别需要哪条原文，再固定混合检索基线。</li>
+          <li>让 AI 为同一问题加一条显式关系或一个分解函数，标明每一步能读的文档和次数上限。</li>
+          <li>你核对原文和中间关系，撤掉一份资料重试。要求输出停止原因，并只记录真实找回的片段。</li>
+        </ol>
+      </details>
       <div class="table-wrap" role="region" aria-label="验收清单" tabindex="0">
         <table>
           <caption>每一步怎样算过关</caption>
@@ -428,6 +569,24 @@ function updateRrf() {
       + (row.wordRank || "缺席") + "，向量 " + (row.vectorRank || "缺席") + " · " + row.score.toFixed(5)));
 }
 
+// 只展示沿途可见的前缀，范围受限时不穿越该条关系。
+function updatePath() {
+  const depth = Number(byId("path-depth").value);
+  const policyVisible = byId("policy-visible").checked;
+  const steps = [
+    "北区型号表 · AB-123 适用政策 P-7（第 2 页）",
+    "延保政策 P-7 · 由受理站 R-2 办理（第 5 页）",
+    "服务名录 · R-2 转区域技术组（第 1 页）",
+  ];
+  byId("depth-value").textContent = depth + " 条";
+  const reached = steps.slice(0, policyVisible ? depth : 1);
+  const summary = depth === 1 ? "走到策略允许的深度。现有证据只支持适用政策。"
+    : !policyVisible ? "政策超出查询范围。路径在 P-7 停止，不能确认受理站或团队。"
+    : depth === 2 ? "已找到受理站。需要再走一步才能确认团队。"
+    : "找到区域技术组，三份证据都可回查。";
+  resultList(byId("path-result"), summary, reached);
+}
+
 // 发布指针和资料撤销是两类状态，演示同一版本也要应用当前访问条件。
 function updateRelease() {
   const state = byId("release-state").value;
@@ -451,9 +610,11 @@ byId("keyword-query").addEventListener("change", updateKeyword);
 document.querySelectorAll('input[name="lexical"]').forEach((input) => input.addEventListener("change", updateKeyword));
 byId("vector-order").addEventListener("change", updateRrf);
 byId("rrf-k").addEventListener("input", updateRrf);
+byId("path-depth").addEventListener("input", updatePath);
+byId("policy-visible").addEventListener("change", updatePath);
 byId("release-state").addEventListener("change", updateRelease);
 byId("release-revoked").addEventListener("change", updateRelease);
-for (const update of [updateChunks, updateKeyword, updateRrf, updateRelease]) update();
+for (const update of [updateChunks, updateKeyword, updateRrf, updatePath, updateRelease]) update();
 
 const chapterLinks = [...document.querySelectorAll("aside nav a")];
 function showCurrentChapter() {

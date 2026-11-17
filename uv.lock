@@ -12,6 +12,7 @@ resolution-markers = [
 members = [
     "inkparse",
     "inkrag",
+    "inkrag-core",
     "inkrag-platform",
     "inkstore",
 ]
@@ -1056,7 +1057,7 @@ provides-extras = ["docling"]
 
 [[package]]
 name = "inkrag"
-version = "1.1.0a1"
+version = "1.2.0a1"
 source = { editable = "." }
 dependencies = [
     { name = "filelock" },
@@ -1115,6 +1116,34 @@ dev = [
     { name = "pytest", specifier = ">=8.4,<10" },
     { name = "ruff", specifier = ">=0.12,<1" },
 ]
+
+[[package]]
+name = "inkrag-core"
+version = "0.1.0a1"
+source = { editable = "packages/inkrag-core" }
+
+[package.optional-dependencies]
+docling = [
+    { name = "inkparse", extra = ["docling"] },
+]
+jieba = [
+    { name = "jieba" },
+]
+parse = [
+    { name = "inkparse" },
+]
+postgres = [
+    { name = "psycopg", extra = ["binary"] },
+]
+
+[package.metadata]
+requires-dist = [
+    { name = "inkparse", marker = "extra == 'parse'", editable = "packages/inkparse" },
+    { name = "inkparse", extras = ["docling"], marker = "extra == 'docling'", editable = "packages/inkparse" },
+    { name = "jieba", marker = "extra == 'jieba'", specifier = "==0.42.1" },
+    { name = "psycopg", extras = ["binary"], marker = "extra == 'postgres'", specifier = ">=3.2,<4" },
+]
+provides-extras = ["jieba", "parse", "docling", "postgres"]
 
 [[package]]
 name = "inkrag-platform"

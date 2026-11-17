@@ -14,7 +14,7 @@ Documentation = "https://github.com/chenyk2016/inkrag/blob/main/docs/platform-im
 Issues = "https://github.com/chenyk2016/inkrag/issues"
 
 [project.optional-dependencies]
-rag = ["inkrag==1.1.0a1", "opensearch-py>=3,<4", "tokenizers>=0.22,<0.24"]
+rag = ["inkrag==1.2.0a1", "opensearch-py>=3,<4", "tokenizers>=0.22,<0.24"]
 
 [project.scripts]
 inkrag = "inkrag_platform.cli:main"

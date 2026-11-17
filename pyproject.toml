@@ -1,6 +1,6 @@
 [project]
 name = "inkrag"
-version = "1.1.0a1"
+version = "1.2.0a1"
 description = "Evidence-oriented document ingestion and hybrid retrieval"
 readme = "README.md"
 license = "Apache-2.0"
@@ -51,8 +51,8 @@ select = ["E4", "E7", "E9", "F", "I", "B", "UP", "ASYNC", "ANN", "RUF"]
 allowed-confusables = ["，", "。", "：", "；", "（", "）", "、", "？", "！"]
 
 [tool.pyright]
-include = ["src", "packages/inkparse/src", "packages/inkstore/src", "packages/inkrag-platform/src", "tests", "examples"]
-extraPaths = ["packages/inkparse/src", "packages/inkstore/src", "packages/inkrag-platform/src"]
+include = ["src", "packages/inkparse/src", "packages/inkstore/src", "packages/inkrag-core/src", "packages/inkrag-platform/src", "tests", "examples"]
+extraPaths = ["packages/inkparse/src", "packages/inkstore/src", "packages/inkrag-core/src", "packages/inkrag-platform/src"]
 exclude = [".venv", "**/__pycache__"]
 pythonVersion = "3.12"
 typeCheckingMode = "strict"
@@ -74,7 +74,7 @@ markers = ["integration: 使用真实本地模型，需要显式启用"]
 link-mode = "copy"
 
 [tool.uv.workspace]
-members = ["packages/inkparse", "packages/inkstore", "packages/inkrag-platform"]
+members = ["packages/inkparse", "packages/inkstore", "packages/inkrag-core", "packages/inkrag-platform"]
 
 [tool.uv.sources]
 torch = [{ index = "pytorch-cpu", marker = "sys_platform == 'linux'" }]

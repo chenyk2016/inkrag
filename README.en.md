@@ -1,5 +1,17 @@
 # InkRAG
 
+InkRAG Core provides document evidence JSON, pluggable embedding and tokenization, SQLite and PostgreSQL + pgvector, selectable keyword, vector and reference graph routes, and bounded multi-step retrieval. The core wheel uses the Python standard library. Run its offline example with Python 3.12 and uv:
+
+```sh
+git clone https://github.com/chenyk2016/inkrag.git
+cd inkrag
+uv run --locked --no-dev --package inkrag-core python examples/core_retrieval.py
+```
+
+[Core API and deployment guide (Chinese)](docs/core-guide.md) · [Interactive maintainer guide (Chinese)](https://chenyk2016.github.io/inkrag/)
+
+## SDK and workspace compatibility
+
 InkRAG turns manuals, policies, and other documents into searchable evidence that can be checked against the original. Build a local knowledge base with the Python SDK, or use the self-hosted workspace to review and publish versions for other applications to query.
 
 [中文 README](README.md) · [Documentation](docs/index.md) · [Interactive tutorial (Chinese)](https://chenyk2016.github.io/inkrag/) · [Releases](https://github.com/chenyk2016/inkrag/releases)
