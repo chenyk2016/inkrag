@@ -34,6 +34,7 @@ docs/asset-storage.md
 docs/core-guide.md
 docs/deployment.md
 docs/dual-retrieval-guide.md
+docs/evidence/core-real-model.json
 docs/evidence/jieba-retrieval.json
 docs/index.md
 docs/learn/index.html

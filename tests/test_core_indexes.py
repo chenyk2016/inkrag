@@ -32,7 +32,8 @@ def index_factory(
     if not dsn:
         pytest.skip("需要显式专用的 PostgreSQL + pgvector 测试连接")
     import psycopg
-    from psycopg.conninfo import conninfo_to_dict
+    from psycopg import sql
+    from psycopg.conninfo import conninfo_to_dict, make_conninfo
 
     params = conninfo_to_dict(dsn)
     database = params.get("dbname")
@@ -42,10 +43,15 @@ def index_factory(
         or not database.startswith("inkrag_core_test")
     ):
         pytest.fail("只允许在本机 inkrag_core_test 专用数据库中执行测试")
-    prefix = "fixture-" + uuid4().hex + "-"
+    identity = uuid4().hex
+    prefix = "fixture-" + identity + "-"
+    runtime_role = "inkrag_core_" + identity
+    role = sql.Identifier(runtime_role)
+    runtime_dsn = make_conninfo(dsn, options=f"-c role={runtime_role}")
     collections: set[str] = set()
     with psycopg.connect(dsn) as connection:
         connection.execute("CREATE EXTENSION IF NOT EXISTS vector WITH SCHEMA public")
+        connection.execute(sql.SQL("CREATE ROLE {} NOLOGIN").format(role))
 
     def postgres(collection: str, profile: IndexProfile) -> Index:
         """创建独立集合，随后用普通打开方式验证已有配置。"""
@@ -53,13 +59,23 @@ def index_factory(
         if name not in collections:
             PostgresIndex(dsn, name, profile, initialize=True)
             collections.add(name)
-        return PostgresIndex(dsn, name, profile)
+            with psycopg.connect(dsn) as connection:
+                connection.execute(sql.SQL("GRANT USAGE ON SCHEMA inkrag_core TO {}").format(role))
+                connection.execute(
+                    sql.SQL("GRANT SELECT ON inkrag_core.collections TO {}").format(role)
+                )
+                connection.execute(
+                    sql.SQL(
+                        "GRANT SELECT, INSERT, DELETE ON inkrag_core.chunks, inkrag_core.postings TO {}"
+                    ).format(role)
+                )
+        return PostgresIndex(runtime_dsn, name, profile)
 
     try:
         yield postgres
     finally:
-        if collections:
-            with psycopg.connect(dsn) as connection:
+        with psycopg.connect(dsn) as connection:
+            if collections:
                 names = list(collections)
                 connection.execute(
                     "DELETE FROM inkrag_core.chunks WHERE collection=ANY(%s)", (names,)
@@ -67,6 +83,8 @@ def index_factory(
                 connection.execute(
                     "DELETE FROM inkrag_core.collections WHERE name=ANY(%s)", (names,)
                 )
+            connection.execute(sql.SQL("DROP OWNED BY {}").format(role))
+            connection.execute(sql.SQL("DROP ROLE {}").format(role))
 
 
 def indexed(

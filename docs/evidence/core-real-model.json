@@ -1,0 +1,956 @@
+{
+  "recorded_at_utc": "2026-11-17T13:18:55.745265+00:00",
+  "model": {
+    "id": "BAAI/bge-small-zh-v1.5",
+    "revision": "7999e1d3359715c523056ef9478215996d62a620",
+    "pooling": "CLS",
+    "normalized": true,
+    "query_instruction": null,
+    "dimensions": 512,
+    "device": "cpu",
+    "torch": "2.15.0",
+    "transformers": "5.22.2",
+    "safetensors_bytes": 95827648,
+    "load_ms": 2326.708,
+    "files_sha256": {
+      "config.json": "3853a7979202c348751b753e36f579c41d8da7d36af617d3d907e1fc9b441f2a",
+      "model.safetensors": "354763b9b1357bc9c44f62c6be2276321081ed2567773608c0d0785b61d5a026",
+      "special_tokens_map.json": "b6d346be366a7d1d48332dbc9fdf3bf8960b5d879522b7799ddba59e76237ee3",
+      "tokenizer.json": "48cea5d44424912a6fd1ea647bf4fe50b55ab8b1e5879c3275f80e339e8fae26",
+      "tokenizer_config.json": "e6f3b96db926a37d4039995fbf5ad17de158dfb8f6343d607e4dbaad18d75f5a",
+      "vocab.txt": "45bbac6b341c319adc98a532532882e91a9cefc0329aa57bac9ae761c27b291c"
+    }
+  },
+  "source_sha256": {
+    "__init__.py": "6a8a624aabf593245ffb61465c9552177730e0b6b7b73013e1d413d50a1beda0",
+    "analyzers.py": "bc34ccb563cc5e6543040653b33b7803faedb1b5b16cee15f7bf22a16005e5f3",
+    "contracts.py": "669e9cfba6d4c032d7223265fb2a507ca6c391d1733ab4aebf80649eaeabd1dc",
+    "document.py": "fcd5ff35df435dd69de0d796a67312cc9c38f1a18281c0c91ccffa4931121a1f",
+    "embedding.py": "f4629676b22ee8aa488d30d66771eb26d9b45e5453f58c8dd5ceb4a0c865d680",
+    "engine.py": "72f9edabe4c744c51757f7facc01a269ebc6363c49556b256aa5c07dcc98de76",
+    "graph.py": "245922b99b5f5dde7bdfe342cca0c54c39e4912ea8d8d4d26a627bd32f3381df",
+    "inkparse_adapter.py": "47298c2db80ff94a1a73709a79cfc557a64c440b7de949daf197e5a42c9d7ee3",
+    "multihop.py": "0065b7e18f28174b49e81ec5c7cef529b9ec163068ed33f1c5e1ef40cc4a197e",
+    "postgres.py": "e86a9af994e8cd9333a0063244646fbd56aeff3c1f8b09daebde92f195a35929",
+    "sqlite.py": "8b56be8f79ae16eaf9a05fcc798de5826ca7f2f7ccc64817b8b7ab43e5522ae1"
+  },
+  "scope": "Synthetic Chinese text PDFs, clean Unicode text layer; no OCR, model fitting, generated answer, external inference, or production throughput claim.",
+  "cases": [
+    {
+      "id": "audio-paraphrase",
+      "query": "耳机声音断断续续，要怎么弄？",
+      "expected": {
+        "document_id": "earbud",
+        "page": 2,
+        "literal": "缩短设备与耳塞之间的距离"
+      },
+      "scenarios": [
+        {
+          "mode": "keyword",
+          "top_k": 1,
+          "elapsed_ms": 1.47,
+          "target_rank": null,
+          "hits": [
+            {
+              "document_id": "television",
+              "chunk_id": "f4ae96f5de2ed13fd250e0f8508f6832bdd9ae03629648ace09e49698f43b8b2",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "50953724960216c24f471d98aae174e8c00e9619ec0ca99140d1b2e15dbba22f",
+              "score": 21.626998440907805,
+              "text": "电视机声音断断续续时，确认机顶盒的外接功率放大器是否松脱。"
+            }
+          ]
+        },
+        {
+          "mode": "vector",
+          "top_k": 1,
+          "elapsed_ms": 21.477,
+          "target_rank": 1,
+          "hits": [
+            {
+              "document_id": "earbud",
+              "chunk_id": "aa35910016636d11f48ec3abc2087bb91edc47b9272370789ebfa852b53d8697",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "e740ba4658a84142e29b284a58e34537c55f4d6f623e7ceec9c0729075ef85f4",
+              "score": 0.6507302698943714,
+              "text": "蓝牙耳塞播放音频出现间歇性卡顿时，关掉周围无线干扰源，再缩短设备与耳\n塞之间的距离。"
+            }
+          ]
+        },
+        {
+          "mode": "hybrid",
+          "top_k": 1,
+          "elapsed_ms": 49.304,
+          "target_rank": null,
+          "hits": [
+            {
+              "document_id": "television",
+              "chunk_id": "f4ae96f5de2ed13fd250e0f8508f6832bdd9ae03629648ace09e49698f43b8b2",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "50953724960216c24f471d98aae174e8c00e9619ec0ca99140d1b2e15dbba22f",
+              "score": 0.03252247488101534,
+              "text": "电视机声音断断续续时，确认机顶盒的外接功率放大器是否松脱。"
+            }
+          ]
+        },
+        {
+          "mode": "keyword",
+          "top_k": 3,
+          "elapsed_ms": 4.942,
+          "target_rank": 3,
+          "hits": [
+            {
+              "document_id": "television",
+              "chunk_id": "f4ae96f5de2ed13fd250e0f8508f6832bdd9ae03629648ace09e49698f43b8b2",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "50953724960216c24f471d98aae174e8c00e9619ec0ca99140d1b2e15dbba22f",
+              "score": 21.626998440907805,
+              "text": "电视机声音断断续续时，确认机顶盒的外接功率放大器是否松脱。"
+            },
+            {
+              "document_id": "startup",
+              "chunk_id": "89891f42a87d1976dd9af85bea1732bac6e3d15da6a7f6f052cc67b139962a51",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "0c237332a82662cc2838880a01f6058b097c35a80b01ea7b82a97fa3110a898a",
+              "score": 4.238635986049238,
+              "text": "机器一启动就会发出一声响声，这是系统提示音，可在控制面板中关闭。"
+            },
+            {
+              "document_id": "earbud",
+              "chunk_id": "aa35910016636d11f48ec3abc2087bb91edc47b9272370789ebfa852b53d8697",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "e740ba4658a84142e29b284a58e34537c55f4d6f623e7ceec9c0729075ef85f4",
+              "score": 3.3004881513517534,
+              "text": "蓝牙耳塞播放音频出现间歇性卡顿时，关掉周围无线干扰源，再缩短设备与耳\n塞之间的距离。"
+            }
+          ]
+        },
+        {
+          "mode": "vector",
+          "top_k": 3,
+          "elapsed_ms": 38.048,
+          "target_rank": 1,
+          "hits": [
+            {
+              "document_id": "earbud",
+              "chunk_id": "aa35910016636d11f48ec3abc2087bb91edc47b9272370789ebfa852b53d8697",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "e740ba4658a84142e29b284a58e34537c55f4d6f623e7ceec9c0729075ef85f4",
+              "score": 0.6507302698943714,
+              "text": "蓝牙耳塞播放音频出现间歇性卡顿时，关掉周围无线干扰源，再缩短设备与耳\n塞之间的距离。"
+            },
+            {
+              "document_id": "television",
+              "chunk_id": "f4ae96f5de2ed13fd250e0f8508f6832bdd9ae03629648ace09e49698f43b8b2",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "50953724960216c24f471d98aae174e8c00e9619ec0ca99140d1b2e15dbba22f",
+              "score": 0.64349151099694,
+              "text": "电视机声音断断续续时，确认机顶盒的外接功率放大器是否松脱。"
+            },
+            {
+              "document_id": "fan",
+              "chunk_id": "1b78aaceda3eff4a9c210041de7762374084a72a5394286f1870dc622c8dd41b",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "e473670f089943c9d9112c3c57bb763829ee6ebfaf8eaf7d25fb9d347f198c34",
+              "score": 0.5812691350641168,
+              "text": "设备开机时产生尖锐噪音，首先检查风扇轴承有无松动，然后查看叶片是否夹\n有杂物。"
+            }
+          ]
+        },
+        {
+          "mode": "hybrid",
+          "top_k": 3,
+          "elapsed_ms": 13.521,
+          "target_rank": 2,
+          "hits": [
+            {
+              "document_id": "television",
+              "chunk_id": "f4ae96f5de2ed13fd250e0f8508f6832bdd9ae03629648ace09e49698f43b8b2",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "50953724960216c24f471d98aae174e8c00e9619ec0ca99140d1b2e15dbba22f",
+              "score": 0.03252247488101534,
+              "text": "电视机声音断断续续时，确认机顶盒的外接功率放大器是否松脱。"
+            },
+            {
+              "document_id": "earbud",
+              "chunk_id": "aa35910016636d11f48ec3abc2087bb91edc47b9272370789ebfa852b53d8697",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "e740ba4658a84142e29b284a58e34537c55f4d6f623e7ceec9c0729075ef85f4",
+              "score": 0.032266458495966696,
+              "text": "蓝牙耳塞播放音频出现间歇性卡顿时，关掉周围无线干扰源，再缩短设备与耳\n塞之间的距离。"
+            },
+            {
+              "document_id": "startup",
+              "chunk_id": "89891f42a87d1976dd9af85bea1732bac6e3d15da6a7f6f052cc67b139962a51",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "0c237332a82662cc2838880a01f6058b097c35a80b01ea7b82a97fa3110a898a",
+              "score": 0.0315136476426799,
+              "text": "机器一启动就会发出一声响声，这是系统提示音，可在控制面板中关闭。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "proof-paraphrase",
+      "query": "没带购货小票还能换一个吗？",
+      "expected": {
+        "document_id": "proof",
+        "page": 2,
+        "literal": "线上订单记录"
+      },
+      "scenarios": [
+        {
+          "mode": "keyword",
+          "top_k": 1,
+          "elapsed_ms": 1.367,
+          "target_rank": null,
+          "hits": [
+            {
+              "document_id": "receipt",
+              "chunk_id": "32a65d5ed89d64ff6449511a0b0511298a256e7f34d1d74044e0efcd25efbec3",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "359a2fac85ac3d26f7e0dd1d94b6d2fd4ed174b95cc5e75e6495f8ae2693ee22",
+              "score": 17.482689537322695,
+              "text": "购货小票能用于查询原始交易批次，也可用于登记积分。小票补印须向门店说\n明购买日期。"
+            }
+          ]
+        },
+        {
+          "mode": "vector",
+          "top_k": 1,
+          "elapsed_ms": 130.233,
+          "target_rank": null,
+          "hits": [
+            {
+              "document_id": "receipt",
+              "chunk_id": "32a65d5ed89d64ff6449511a0b0511298a256e7f34d1d74044e0efcd25efbec3",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "359a2fac85ac3d26f7e0dd1d94b6d2fd4ed174b95cc5e75e6495f8ae2693ee22",
+              "score": 0.6718223518878293,
+              "text": "购货小票能用于查询原始交易批次，也可用于登记积分。小票补印须向门店说\n明购买日期。"
+            }
+          ]
+        },
+        {
+          "mode": "hybrid",
+          "top_k": 1,
+          "elapsed_ms": 15.353,
+          "target_rank": null,
+          "hits": [
+            {
+              "document_id": "receipt",
+              "chunk_id": "32a65d5ed89d64ff6449511a0b0511298a256e7f34d1d74044e0efcd25efbec3",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "359a2fac85ac3d26f7e0dd1d94b6d2fd4ed174b95cc5e75e6495f8ae2693ee22",
+              "score": 0.03278688524590164,
+              "text": "购货小票能用于查询原始交易批次，也可用于登记积分。小票补印须向门店说\n明购买日期。"
+            }
+          ]
+        },
+        {
+          "mode": "keyword",
+          "top_k": 3,
+          "elapsed_ms": 2.476,
+          "target_rank": 2,
+          "hits": [
+            {
+              "document_id": "receipt",
+              "chunk_id": "32a65d5ed89d64ff6449511a0b0511298a256e7f34d1d74044e0efcd25efbec3",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "359a2fac85ac3d26f7e0dd1d94b6d2fd4ed174b95cc5e75e6495f8ae2693ee22",
+              "score": 17.482689537322695,
+              "text": "购货小票能用于查询原始交易批次，也可用于登记积分。小票补印须向门店说\n明购买日期。"
+            },
+            {
+              "document_id": "proof",
+              "chunk_id": "a947039fa4b2ebb67e8317fc57be300b7abff7aa654dbdb11a3c9053ff1cca3d",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "d7bd713787d2786b97fbe3fb145814fa5eefb49eb1d82c3b1b24b270ec1b8bcc",
+              "score": 3.9392319369635587,
+              "text": "申请质保更换时如遗失原始发票，可以凭线上订单记录办理。"
+            },
+            {
+              "document_id": "startup",
+              "chunk_id": "89891f42a87d1976dd9af85bea1732bac6e3d15da6a7f6f052cc67b139962a51",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "0c237332a82662cc2838880a01f6058b097c35a80b01ea7b82a97fa3110a898a",
+              "score": 2.984174366471054,
+              "text": "机器一启动就会发出一声响声，这是系统提示音，可在控制面板中关闭。"
+            }
+          ]
+        },
+        {
+          "mode": "vector",
+          "top_k": 3,
+          "elapsed_ms": 34.795,
+          "target_rank": 2,
+          "hits": [
+            {
+              "document_id": "receipt",
+              "chunk_id": "32a65d5ed89d64ff6449511a0b0511298a256e7f34d1d74044e0efcd25efbec3",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "359a2fac85ac3d26f7e0dd1d94b6d2fd4ed174b95cc5e75e6495f8ae2693ee22",
+              "score": 0.6718223518878293,
+              "text": "购货小票能用于查询原始交易批次，也可用于登记积分。小票补印须向门店说\n明购买日期。"
+            },
+            {
+              "document_id": "proof",
+              "chunk_id": "a947039fa4b2ebb67e8317fc57be300b7abff7aa654dbdb11a3c9053ff1cca3d",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "d7bd713787d2786b97fbe3fb145814fa5eefb49eb1d82c3b1b24b270ec1b8bcc",
+              "score": 0.5817047205622097,
+              "text": "申请质保更换时如遗失原始发票，可以凭线上订单记录办理。"
+            },
+            {
+              "document_id": "receipt",
+              "chunk_id": "349e64f49f330bc5b4e95e58cdf08d1b7f9b89a12f910af551c42b39cb8cb4e2",
+              "page": 1,
+              "ref": "#/texts/0",
+              "result_id": "359a2fac85ac3d26f7e0dd1d94b6d2fd4ed174b95cc5e75e6495f8ae2693ee22",
+              "score": 0.4818371142907965,
+              "text": "门店交易凭据的使用须知。"
+            }
+          ]
+        },
+        {
+          "mode": "hybrid",
+          "top_k": 3,
+          "elapsed_ms": 15.391,
+          "target_rank": 2,
+          "hits": [
+            {
+              "document_id": "receipt",
+              "chunk_id": "32a65d5ed89d64ff6449511a0b0511298a256e7f34d1d74044e0efcd25efbec3",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "359a2fac85ac3d26f7e0dd1d94b6d2fd4ed174b95cc5e75e6495f8ae2693ee22",
+              "score": 0.03278688524590164,
+              "text": "购货小票能用于查询原始交易批次，也可用于登记积分。小票补印须向门店说\n明购买日期。"
+            },
+            {
+              "document_id": "proof",
+              "chunk_id": "a947039fa4b2ebb67e8317fc57be300b7abff7aa654dbdb11a3c9053ff1cca3d",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "d7bd713787d2786b97fbe3fb145814fa5eefb49eb1d82c3b1b24b270ec1b8bcc",
+              "score": 0.03225806451612903,
+              "text": "申请质保更换时如遗失原始发票，可以凭线上订单记录办理。"
+            },
+            {
+              "document_id": "receipt",
+              "chunk_id": "349e64f49f330bc5b4e95e58cdf08d1b7f9b89a12f910af551c42b39cb8cb4e2",
+              "page": 1,
+              "ref": "#/texts/0",
+              "result_id": "359a2fac85ac3d26f7e0dd1d94b6d2fd4ed174b95cc5e75e6495f8ae2693ee22",
+              "score": 0.015873015873015872,
+              "text": "门店交易凭据的使用须知。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "fan-paraphrase",
+      "query": "机器一启动就发出刺耳的响声，该怎么排查？",
+      "expected": {
+        "document_id": "fan",
+        "page": 2,
+        "literal": "风扇轴承"
+      },
+      "scenarios": [
+        {
+          "mode": "keyword",
+          "top_k": 1,
+          "elapsed_ms": 1.934,
+          "target_rank": null,
+          "hits": [
+            {
+              "document_id": "startup",
+              "chunk_id": "89891f42a87d1976dd9af85bea1732bac6e3d15da6a7f6f052cc67b139962a51",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "0c237332a82662cc2838880a01f6058b097c35a80b01ea7b82a97fa3110a898a",
+              "score": 32.98745936143242,
+              "text": "机器一启动就会发出一声响声，这是系统提示音，可在控制面板中关闭。"
+            }
+          ]
+        },
+        {
+          "mode": "vector",
+          "top_k": 1,
+          "elapsed_ms": 9.533,
+          "target_rank": null,
+          "hits": [
+            {
+              "document_id": "startup",
+              "chunk_id": "89891f42a87d1976dd9af85bea1732bac6e3d15da6a7f6f052cc67b139962a51",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "0c237332a82662cc2838880a01f6058b097c35a80b01ea7b82a97fa3110a898a",
+              "score": 0.744432516638373,
+              "text": "机器一启动就会发出一声响声，这是系统提示音，可在控制面板中关闭。"
+            }
+          ]
+        },
+        {
+          "mode": "hybrid",
+          "top_k": 1,
+          "elapsed_ms": 10.071,
+          "target_rank": null,
+          "hits": [
+            {
+              "document_id": "startup",
+              "chunk_id": "89891f42a87d1976dd9af85bea1732bac6e3d15da6a7f6f052cc67b139962a51",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "0c237332a82662cc2838880a01f6058b097c35a80b01ea7b82a97fa3110a898a",
+              "score": 0.03278688524590164,
+              "text": "机器一启动就会发出一声响声，这是系统提示音，可在控制面板中关闭。"
+            }
+          ]
+        },
+        {
+          "mode": "keyword",
+          "top_k": 3,
+          "elapsed_ms": 4.342,
+          "target_rank": null,
+          "hits": [
+            {
+              "document_id": "startup",
+              "chunk_id": "89891f42a87d1976dd9af85bea1732bac6e3d15da6a7f6f052cc67b139962a51",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "0c237332a82662cc2838880a01f6058b097c35a80b01ea7b82a97fa3110a898a",
+              "score": 32.98745936143242,
+              "text": "机器一启动就会发出一声响声，这是系统提示音，可在控制面板中关闭。"
+            },
+            {
+              "document_id": "sensor",
+              "chunk_id": "96a8f68491d7f8fe8a694b8a31da4123c6f6c55af0338c34675a3550ef0e9531",
+              "page": 1,
+              "ref": "#/texts/0",
+              "result_id": "13e9b6dd655b3c3cb3201e2faa46e683cd7adabb928e76ba8437ed19be94d271",
+              "score": 6.947487137970513,
+              "text": "故障排查手册。"
+            },
+            {
+              "document_id": "othercode",
+              "chunk_id": "ce83e20479b0f38d5dc3ecf61a3a8e81f567b69ee8ae1bb03226664102a5f5e0",
+              "page": 1,
+              "ref": "#/texts/0",
+              "result_id": "5826e1adac8500e2e78e49151f3c72905524cc7075b59066fa58512a03cd35cd",
+              "score": 6.535325241068811,
+              "text": "通信系统故障排查。"
+            }
+          ]
+        },
+        {
+          "mode": "vector",
+          "top_k": 3,
+          "elapsed_ms": 111.067,
+          "target_rank": 2,
+          "hits": [
+            {
+              "document_id": "startup",
+              "chunk_id": "89891f42a87d1976dd9af85bea1732bac6e3d15da6a7f6f052cc67b139962a51",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "0c237332a82662cc2838880a01f6058b097c35a80b01ea7b82a97fa3110a898a",
+              "score": 0.744432516638373,
+              "text": "机器一启动就会发出一声响声，这是系统提示音，可在控制面板中关闭。"
+            },
+            {
+              "document_id": "fan",
+              "chunk_id": "1b78aaceda3eff4a9c210041de7762374084a72a5394286f1870dc622c8dd41b",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "e473670f089943c9d9112c3c57bb763829ee6ebfaf8eaf7d25fb9d347f198c34",
+              "score": 0.7217548843066084,
+              "text": "设备开机时产生尖锐噪音，首先检查风扇轴承有无松动，然后查看叶片是否夹\n有杂物。"
+            },
+            {
+              "document_id": "television",
+              "chunk_id": "f4ae96f5de2ed13fd250e0f8508f6832bdd9ae03629648ace09e49698f43b8b2",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "50953724960216c24f471d98aae174e8c00e9619ec0ca99140d1b2e15dbba22f",
+              "score": 0.6159917038141615,
+              "text": "电视机声音断断续续时，确认机顶盒的外接功率放大器是否松脱。"
+            }
+          ]
+        },
+        {
+          "mode": "hybrid",
+          "top_k": 3,
+          "elapsed_ms": 52.102,
+          "target_rank": 3,
+          "hits": [
+            {
+              "document_id": "startup",
+              "chunk_id": "89891f42a87d1976dd9af85bea1732bac6e3d15da6a7f6f052cc67b139962a51",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "0c237332a82662cc2838880a01f6058b097c35a80b01ea7b82a97fa3110a898a",
+              "score": 0.03278688524590164,
+              "text": "机器一启动就会发出一声响声，这是系统提示音，可在控制面板中关闭。"
+            },
+            {
+              "document_id": "television",
+              "chunk_id": "f4ae96f5de2ed13fd250e0f8508f6832bdd9ae03629648ace09e49698f43b8b2",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "50953724960216c24f471d98aae174e8c00e9619ec0ca99140d1b2e15dbba22f",
+              "score": 0.03149801587301587,
+              "text": "电视机声音断断续续时，确认机顶盒的外接功率放大器是否松脱。"
+            },
+            {
+              "document_id": "fan",
+              "chunk_id": "1b78aaceda3eff4a9c210041de7762374084a72a5394286f1870dc622c8dd41b",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "e473670f089943c9d9112c3c57bb763829ee6ebfaf8eaf7d25fb9d347f198c34",
+              "score": 0.031054405392392875,
+              "text": "设备开机时产生尖锐噪音，首先检查风扇轴承有无松动，然后查看叶片是否夹\n有杂物。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exact-code",
+      "query": "E102",
+      "expected": {
+        "document_id": "sensor",
+        "page": 2,
+        "literal": "温度传感器异常"
+      },
+      "scenarios": [
+        {
+          "mode": "keyword",
+          "top_k": 1,
+          "elapsed_ms": 2.575,
+          "target_rank": 1,
+          "hits": [
+            {
+              "document_id": "sensor",
+              "chunk_id": "f523c7dc8e1643067c008dbc0b8629f44388a3896e601447af2a4a713eb2723c",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "13e9b6dd655b3c3cb3201e2faa46e683cd7adabb928e76ba8437ed19be94d271",
+              "score": 2.217336501723792,
+              "text": "E102 表示温度传感器异常。先断开电源，等待停止转动，再检查接线。"
+            }
+          ]
+        },
+        {
+          "mode": "vector",
+          "top_k": 1,
+          "elapsed_ms": 14.78,
+          "target_rank": null,
+          "hits": [
+            {
+              "document_id": "othercode",
+              "chunk_id": "38c441bea65d68ba2dbb40f82ff93408a02f6d10fd95b0f252832209e570c2d0",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "5826e1adac8500e2e78e49151f3c72905524cc7075b59066fa58512a03cd35cd",
+              "score": 0.48022014321319245,
+              "text": "E1020 表示计时模块通讯失败，请检查时钟接口和日期配置。"
+            }
+          ]
+        },
+        {
+          "mode": "hybrid",
+          "top_k": 1,
+          "elapsed_ms": 17.574,
+          "target_rank": 1,
+          "hits": [
+            {
+              "document_id": "sensor",
+              "chunk_id": "f523c7dc8e1643067c008dbc0b8629f44388a3896e601447af2a4a713eb2723c",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "13e9b6dd655b3c3cb3201e2faa46e683cd7adabb928e76ba8437ed19be94d271",
+              "score": 0.03252247488101534,
+              "text": "E102 表示温度传感器异常。先断开电源，等待停止转动，再检查接线。"
+            }
+          ]
+        },
+        {
+          "mode": "keyword",
+          "top_k": 3,
+          "elapsed_ms": 1.433,
+          "target_rank": 1,
+          "hits": [
+            {
+              "document_id": "sensor",
+              "chunk_id": "f523c7dc8e1643067c008dbc0b8629f44388a3896e601447af2a4a713eb2723c",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "13e9b6dd655b3c3cb3201e2faa46e683cd7adabb928e76ba8437ed19be94d271",
+              "score": 2.217336501723792,
+              "text": "E102 表示温度传感器异常。先断开电源，等待停止转动，再检查接线。"
+            }
+          ]
+        },
+        {
+          "mode": "vector",
+          "top_k": 3,
+          "elapsed_ms": 11.13,
+          "target_rank": 2,
+          "hits": [
+            {
+              "document_id": "othercode",
+              "chunk_id": "38c441bea65d68ba2dbb40f82ff93408a02f6d10fd95b0f252832209e570c2d0",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "5826e1adac8500e2e78e49151f3c72905524cc7075b59066fa58512a03cd35cd",
+              "score": 0.48022014321319245,
+              "text": "E1020 表示计时模块通讯失败，请检查时钟接口和日期配置。"
+            },
+            {
+              "document_id": "sensor",
+              "chunk_id": "f523c7dc8e1643067c008dbc0b8629f44388a3896e601447af2a4a713eb2723c",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "13e9b6dd655b3c3cb3201e2faa46e683cd7adabb928e76ba8437ed19be94d271",
+              "score": 0.4738583982619242,
+              "text": "E102 表示温度传感器异常。先断开电源，等待停止转动，再检查接线。"
+            },
+            {
+              "document_id": "othercode",
+              "chunk_id": "ce83e20479b0f38d5dc3ecf61a3a8e81f567b69ee8ae1bb03226664102a5f5e0",
+              "page": 1,
+              "ref": "#/texts/0",
+              "result_id": "5826e1adac8500e2e78e49151f3c72905524cc7075b59066fa58512a03cd35cd",
+              "score": 0.4701778789553384,
+              "text": "通信系统故障排查。"
+            }
+          ]
+        },
+        {
+          "mode": "hybrid",
+          "top_k": 3,
+          "elapsed_ms": 86.054,
+          "target_rank": 1,
+          "hits": [
+            {
+              "document_id": "sensor",
+              "chunk_id": "f523c7dc8e1643067c008dbc0b8629f44388a3896e601447af2a4a713eb2723c",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "13e9b6dd655b3c3cb3201e2faa46e683cd7adabb928e76ba8437ed19be94d271",
+              "score": 0.03252247488101534,
+              "text": "E102 表示温度传感器异常。先断开电源，等待停止转动，再检查接线。"
+            },
+            {
+              "document_id": "othercode",
+              "chunk_id": "38c441bea65d68ba2dbb40f82ff93408a02f6d10fd95b0f252832209e570c2d0",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "5826e1adac8500e2e78e49151f3c72905524cc7075b59066fa58512a03cd35cd",
+              "score": 0.01639344262295082,
+              "text": "E1020 表示计时模块通讯失败，请检查时钟接口和日期配置。"
+            },
+            {
+              "document_id": "othercode",
+              "chunk_id": "ce83e20479b0f38d5dc3ecf61a3a8e81f567b69ee8ae1bb03226664102a5f5e0",
+              "page": 1,
+              "ref": "#/texts/0",
+              "result_id": "5826e1adac8500e2e78e49151f3c72905524cc7075b59066fa58512a03cd35cd",
+              "score": 0.015873015873015872,
+              "text": "通信系统故障排查。"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": "unanswerable",
+      "query": "火星赤道的大气密度是多少？",
+      "expected": {
+        "document_id": null,
+        "page": null,
+        "literal": null
+      },
+      "scenarios": [
+        {
+          "mode": "keyword",
+          "top_k": 1,
+          "elapsed_ms": 1.603,
+          "target_rank": null,
+          "hits": [
+            {
+              "document_id": "television",
+              "chunk_id": "f4ae96f5de2ed13fd250e0f8508f6832bdd9ae03629648ace09e49698f43b8b2",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "50953724960216c24f471d98aae174e8c00e9619ec0ca99140d1b2e15dbba22f",
+              "score": 4.89378020146931,
+              "text": "电视机声音断断续续时，确认机顶盒的外接功率放大器是否松脱。"
+            }
+          ]
+        },
+        {
+          "mode": "vector",
+          "top_k": 1,
+          "elapsed_ms": 25.0,
+          "target_rank": null,
+          "hits": [
+            {
+              "document_id": "sensor",
+              "chunk_id": "f523c7dc8e1643067c008dbc0b8629f44388a3896e601447af2a4a713eb2723c",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "13e9b6dd655b3c3cb3201e2faa46e683cd7adabb928e76ba8437ed19be94d271",
+              "score": 0.33444937647707873,
+              "text": "E102 表示温度传感器异常。先断开电源，等待停止转动，再检查接线。"
+            }
+          ]
+        },
+        {
+          "mode": "hybrid",
+          "top_k": 1,
+          "elapsed_ms": 70.267,
+          "target_rank": null,
+          "hits": [
+            {
+              "document_id": "sensor",
+              "chunk_id": "f523c7dc8e1643067c008dbc0b8629f44388a3896e601447af2a4a713eb2723c",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "13e9b6dd655b3c3cb3201e2faa46e683cd7adabb928e76ba8437ed19be94d271",
+              "score": 0.03252247488101534,
+              "text": "E102 表示温度传感器异常。先断开电源，等待停止转动，再检查接线。"
+            }
+          ]
+        },
+        {
+          "mode": "keyword",
+          "top_k": 3,
+          "elapsed_ms": 1.373,
+          "target_rank": null,
+          "hits": [
+            {
+              "document_id": "television",
+              "chunk_id": "f4ae96f5de2ed13fd250e0f8508f6832bdd9ae03629648ace09e49698f43b8b2",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "50953724960216c24f471d98aae174e8c00e9619ec0ca99140d1b2e15dbba22f",
+              "score": 4.89378020146931,
+              "text": "电视机声音断断续续时，确认机顶盒的外接功率放大器是否松脱。"
+            },
+            {
+              "document_id": "sensor",
+              "chunk_id": "f523c7dc8e1643067c008dbc0b8629f44388a3896e601447af2a4a713eb2723c",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "13e9b6dd655b3c3cb3201e2faa46e683cd7adabb928e76ba8437ed19be94d271",
+              "score": 2.217336501723792,
+              "text": "E102 表示温度传感器异常。先断开电源，等待停止转动，再检查接线。"
+            },
+            {
+              "document_id": "receipt",
+              "chunk_id": "349e64f49f330bc5b4e95e58cdf08d1b7f9b89a12f910af551c42b39cb8cb4e2",
+              "page": 1,
+              "ref": "#/texts/0",
+              "result_id": "359a2fac85ac3d26f7e0dd1d94b6d2fd4ed174b95cc5e75e6495f8ae2693ee22",
+              "score": 1.978716548631513,
+              "text": "门店交易凭据的使用须知。"
+            }
+          ]
+        },
+        {
+          "mode": "vector",
+          "top_k": 3,
+          "elapsed_ms": 15.299,
+          "target_rank": null,
+          "hits": [
+            {
+              "document_id": "sensor",
+              "chunk_id": "f523c7dc8e1643067c008dbc0b8629f44388a3896e601447af2a4a713eb2723c",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "13e9b6dd655b3c3cb3201e2faa46e683cd7adabb928e76ba8437ed19be94d271",
+              "score": 0.33444937647707873,
+              "text": "E102 表示温度传感器异常。先断开电源，等待停止转动，再检查接线。"
+            },
+            {
+              "document_id": "fan",
+              "chunk_id": "1b78aaceda3eff4a9c210041de7762374084a72a5394286f1870dc622c8dd41b",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "e473670f089943c9d9112c3c57bb763829ee6ebfaf8eaf7d25fb9d347f198c34",
+              "score": 0.29978864582043646,
+              "text": "设备开机时产生尖锐噪音，首先检查风扇轴承有无松动，然后查看叶片是否夹\n有杂物。"
+            },
+            {
+              "document_id": "television",
+              "chunk_id": "f4ae96f5de2ed13fd250e0f8508f6832bdd9ae03629648ace09e49698f43b8b2",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "50953724960216c24f471d98aae174e8c00e9619ec0ca99140d1b2e15dbba22f",
+              "score": 0.2992684159680204,
+              "text": "电视机声音断断续续时，确认机顶盒的外接功率放大器是否松脱。"
+            }
+          ]
+        },
+        {
+          "mode": "hybrid",
+          "top_k": 3,
+          "elapsed_ms": 8.868,
+          "target_rank": null,
+          "hits": [
+            {
+              "document_id": "sensor",
+              "chunk_id": "f523c7dc8e1643067c008dbc0b8629f44388a3896e601447af2a4a713eb2723c",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "13e9b6dd655b3c3cb3201e2faa46e683cd7adabb928e76ba8437ed19be94d271",
+              "score": 0.03252247488101534,
+              "text": "E102 表示温度传感器异常。先断开电源，等待停止转动，再检查接线。"
+            },
+            {
+              "document_id": "television",
+              "chunk_id": "f4ae96f5de2ed13fd250e0f8508f6832bdd9ae03629648ace09e49698f43b8b2",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "50953724960216c24f471d98aae174e8c00e9619ec0ca99140d1b2e15dbba22f",
+              "score": 0.032266458495966696,
+              "text": "电视机声音断断续续时，确认机顶盒的外接功率放大器是否松脱。"
+            },
+            {
+              "document_id": "fan",
+              "chunk_id": "1b78aaceda3eff4a9c210041de7762374084a72a5394286f1870dc622c8dd41b",
+              "page": 2,
+              "ref": "#/texts/1",
+              "result_id": "e473670f089943c9d9112c3c57bb763829ee6ebfaf8eaf7d25fb9d347f198c34",
+              "score": 0.0315136476426799,
+              "text": "设备开机时产生尖锐噪音，首先检查风扇轴承有无松动，然后查看叶片是否夹\n有杂物。"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "scope_checks": {
+    "audio-paraphrase": {
+      "keyword": {
+        "excluded": 3,
+        "only_allowed": 2,
+        "empty_scope": 0,
+        "empty_scope_embedding_calls": 0
+      },
+      "vector": {
+        "excluded": 3,
+        "only_allowed": 2,
+        "empty_scope": 0,
+        "empty_scope_embedding_calls": 0
+      },
+      "hybrid": {
+        "excluded": 3,
+        "only_allowed": 2,
+        "empty_scope": 0,
+        "empty_scope_embedding_calls": 0
+      }
+    },
+    "proof-paraphrase": {
+      "keyword": {
+        "excluded": 2,
+        "only_allowed": 1,
+        "empty_scope": 0,
+        "empty_scope_embedding_calls": 0
+      },
+      "vector": {
+        "excluded": 3,
+        "only_allowed": 3,
+        "empty_scope": 0,
+        "empty_scope_embedding_calls": 0
+      },
+      "hybrid": {
+        "excluded": 3,
+        "only_allowed": 3,
+        "empty_scope": 0,
+        "empty_scope_embedding_calls": 0
+      }
+    },
+    "fan-paraphrase": {
+      "keyword": {
+        "excluded": 3,
+        "only_allowed": 2,
+        "empty_scope": 0,
+        "empty_scope_embedding_calls": 0
+      },
+      "vector": {
+        "excluded": 3,
+        "only_allowed": 2,
+        "empty_scope": 0,
+        "empty_scope_embedding_calls": 0
+      },
+      "hybrid": {
+        "excluded": 3,
+        "only_allowed": 2,
+        "empty_scope": 0,
+        "empty_scope_embedding_calls": 0
+      }
+    },
+    "exact-code": {
+      "keyword": {
+        "excluded": 0,
+        "only_allowed": 1,
+        "empty_scope": 0,
+        "empty_scope_embedding_calls": 0
+      },
+      "vector": {
+        "excluded": 3,
+        "only_allowed": 2,
+        "empty_scope": 0,
+        "empty_scope_embedding_calls": 0
+      },
+      "hybrid": {
+        "excluded": 3,
+        "only_allowed": 2,
+        "empty_scope": 0,
+        "empty_scope_embedding_calls": 0
+      }
+    }
+  },
+  "pdf_count": 8,
+  "chunk_count": 17,
+  "reopened_top1": "f523c7dc8e1643067c008dbc0b8629f44388a3896e601447af2a4a713eb2723c",
+  "retrieval_summary": {
+    "keyword": {
+      "hit_at_1": 1,
+      "hit_at_3": 3
+    },
+    "vector": {
+      "hit_at_1": 1,
+      "hit_at_3": 4
+    },
+    "hybrid": {
+      "hit_at_1": 1,
+      "hit_at_3": 4
+    }
+  }
+}

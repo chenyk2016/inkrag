@@ -31,13 +31,13 @@ uv build --all-packages --sdist --wheel
 python3 scripts/export-public-source.py --ref HEAD --output dist/inkrag-source.tar
 ```
 
-检查四个 Python 包的 wheel 和 sdist 的版本、许可和资源。平台 wheel 应包含前端资源、第三方许可、迁移、Compose 和模型分词器的声明。根 Python 包的 sdist 仅收录 Python 源码和构建所需的文件。逐项审查 [公开文件清单](public-source-files.txt)。源码导出从已提交 Git 树读取清单及文件，拒绝意外符号链接、已知密钥形态，排除工作区历史和私用评测资产。首次公开仓库由该导出初始化。每次发行前，从干净目录解包，检查 README 命令和文档链接。
+检查五个 Python 包的 wheel 和 sdist 的版本、许可和资源。从干净环境只安装 Core wheel，运行 `examples/core_retrieval.py`。平台 wheel 应包含前端资源、第三方许可、迁移、Compose 和模型分词器的声明。根 Python 包的 sdist 仅收录 Python 源码和构建所需的文件。逐项审查 [公开文件清单](public-source-files.txt)。源码导出从已提交 Git 树读取清单及文件，拒绝意外符号链接、已知密钥形态，排除工作区历史和私用评测资产。首次公开仓库由该导出初始化。每次发行前，从干净目录解包，检查 README 命令和文档链接。
 
 ## 发布前确认
 
-当前公开发行以 [GitHub 预发行版](https://github.com/chenyk2016/inkrag/releases) 为准。项目采用 [Apache-2.0](../LICENSE)，许可文本及 [NOTICE](../NOTICE) 随源码包和四个 Python 分发包交付。可从源码运行，或使用 GitHub Release 提供的一组匹配 wheel。PyPI 上的同名 `inkparse` 属于另一个项目。
+当前公开发行以 [GitHub 预发行版](https://github.com/chenyk2016/inkrag/releases) 为准。项目采用 [Apache-2.0](../LICENSE)，许可文本及 [NOTICE](../NOTICE) 随源码包和五个 Python 分发包交付。可从源码运行，或使用 GitHub Release 提供的一组匹配 wheel。PyPI 上的同名 `inkparse` 属于另一个项目。
 
 - 核对源码包和 wheel 内的许可证、声明与第三方材料。[第三方说明](../THIRD_PARTY_NOTICES.md)
 - 在实际发行的平台和架构上核对安装、OCI digest、软件物料清单、镜像与依赖漏洞、签名和来源。将可复核的证据与制品一起留存。
 - 更新变更记录并写清兼容性、旧索引、数据库迁移、回滚及未验证范围。版本号与分发物分别核对。
-- 核对 GitHub 的质量检查、私密漏洞报告入口，以及发行标签和源码包的对应关系。分别记录 PyPI 和容器镜像的发布状态。[GitHub 私密漏洞报告](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/report-privately)
+- 核对 GitHub Actions 的常规质量检查、原平台 PostgreSQL/OpenSearch 集成以及 Core 的 pgvector 集成。核对私密漏洞报告入口、发行标签和源码包的对应关系。分别记录 PyPI 和容器镜像的发布状态。[GitHub 私密漏洞报告](https://docs.github.com/en/code-security/how-tos/report-and-fix-vulnerabilities/report-privately)
